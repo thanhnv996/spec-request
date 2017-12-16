@@ -64,14 +64,13 @@ public class TicketRest {
             @FormParam("partcode") @NotNull String partcode,
             @FormParam("assigned_to") @NotNull int assigned_to,
             @FormParam("content") @NotNull String content,
-            @FormParam("teamid") @NotNull int teamid,
             @Context HttpServletRequest request) {
         try {
             Integer userId = sessionManager.getSessionUserId(request);
             Employees createdBy= em.find(Employees.class, userId);
             Employees assignedTo = commonBusiness.getUserById(assigned_to);
             PartIt partIt = commonBusiness.getPartByCode(partcode);
-            Teams team = commonBusiness.getTeamsById(teamid);
+            Teams team = commonBusiness.getTeamsByMemberId(userId);
             
             DateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm"); 
             Date deadlineDate;

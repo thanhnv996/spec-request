@@ -110,4 +110,13 @@ public class CommonBusiness {
         }
         return team;
     }
+    
+    public Teams getTeamsByMemberId(int memberid) throws NotFoundException {
+        Employees member = em.find(Employees.class, memberid);
+        Teams team = member.getTeamId();
+        if (team == null) {
+            throw new NotFoundException("Not found team with teamid :" + team.getId());
+        }
+        return team;
+    }
 }
