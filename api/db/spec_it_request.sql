@@ -217,6 +217,7 @@ CREATE TABLE `ticket_reads` (
 --
 
 CREATE TABLE `ticket_relaters` (
+  `id` int(10) UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
   `ticket_id` int(10) UNSIGNED NOT NULL,
   `employee_id` int(10) UNSIGNED NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -313,7 +314,7 @@ ALTER TABLE `ticket_reads`
 -- Chỉ mục cho bảng `ticket_relaters`
 --
 ALTER TABLE `ticket_relaters`
-  ADD PRIMARY KEY (`ticket_id`,`employee_id`) USING BTREE,
+  ADD KEY `ticket_relaters_ticket_id_foreign` (`ticket_id`) USING BTREE,
   ADD KEY `ticket_relaters_employee_id_foreign` (`employee_id`) USING BTREE;
 
 --

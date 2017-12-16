@@ -9,11 +9,15 @@ import config.Config;
 import entity.Employees;
 import entity.PartIt;
 import entity.Teams;
+import entity.TicketRelaters;
 import entity.Tickets;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -47,13 +51,12 @@ public class TicketRest {
     // "Insert Code > Add Business Method")
     @PersistenceContext(unitName = Config.PERSISTENCE_UNIT_NAME)
     private EntityManager em;
-    
-    
-    @EJB 
+
+    @EJB
     SessionManager sessionManager;
     @EJB
     CommonBusiness commonBusiness;
-    
+
     @POST
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})
@@ -63,27 +66,45 @@ public class TicketRest {
             @FormParam("deadline") @NotNull String deadline,
             @FormParam("partcode") @NotNull String partcode,
             @FormParam("assigned_to") @NotNull int assigned_to,
+            @FormParam("stringListRelaterId") String stringListRelaterId,
             @FormParam("content") @NotNull String content,
             @Context HttpServletRequest request) {
         try {
             Integer userId = sessionManager.getSessionUserId(request);
-            Employees createdBy= em.find(Employees.class, userId);
+            Employees createdBy = em.find(Employees.class, userId);
             Employees assignedTo = commonBusiness.getUserById(assigned_to);
             PartIt partIt = commonBusiness.getPartByCode(partcode);
             Teams team = commonBusiness.getTeamsByMemberId(userId);
-            
-            DateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm"); 
+
+            DateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm");
             Date deadlineDate;
             try {
                 deadlineDate = df.parse(deadline);
             } catch (ParseException e) {
                 return z11.rs.auth.AuthUtil.makeTextResponse(Response.Status.BAD_REQUEST, "DATE_CANT_FORMAT");
             }
-            
-            Tickets ticket = new Tickets(subject,content,priority,deadlineDate,assignedTo,createdBy,partIt,team);
+
+            Tickets ticket = new Tickets(subject, content, priority, deadlineDate, assignedTo, createdBy, partIt, team);
             em.persist(ticket);
 
-            return z11.rs.auth.AuthUtil.makeTextResponse(Response.Status.ACCEPTED, "SUCCESS");
+            try {
+                List<String> listRelatersId = new ArrayList<>(Arrays.asList(stringListRelaterId.split(",")));
+                try {
+                    for (String idStr : listRelatersId) {
+                        int relaterId = Integer.valueOf(idStr);
+                        Employees relater = commonBusiness.getUserById(relaterId);
+                        TicketRelaters relaters = new TicketRelaters();
+                        relaters.setEmployeeId(relater);
+                        relaters.setTicketId(ticket);
+                        em.persist(relaters);
+                        System.out.println("add relaters");
+                    }
+                } catch (Exception e) {
+                    return z11.rs.auth.AuthUtil.makeTextResponse(Response.Status.BAD_REQUEST, "INVALID LIST RELATER ID");
+                }
+            } finally {
+                return z11.rs.auth.AuthUtil.makeTextResponse(Response.Status.ACCEPTED, "SUCCESS");
+            }
         } catch (RestException restException) {
             return restException.makeHttpResponse();
         }

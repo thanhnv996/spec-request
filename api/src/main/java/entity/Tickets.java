@@ -51,6 +51,8 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Tickets.findByUpdatedAt", query = "SELECT t FROM Tickets t WHERE t.updatedAt = :updatedAt"),
     @NamedQuery(name = "Tickets.findByDeletedAt", query = "SELECT t FROM Tickets t WHERE t.deletedAt = :deletedAt")})
 public class Tickets implements Serializable {
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "ticketId")
+    private Collection<TicketRelaters> ticketRelatersCollection;
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -332,6 +334,15 @@ public class Tickets implements Serializable {
     @Override
     public String toString() {
         return "entity.Tickets[ id=" + id + " ]";
+    }
+
+    @XmlTransient
+    public Collection<TicketRelaters> getTicketRelatersCollection() {
+        return ticketRelatersCollection;
+    }
+
+    public void setTicketRelatersCollection(Collection<TicketRelaters> ticketRelatersCollection) {
+        this.ticketRelatersCollection = ticketRelatersCollection;
     }
 
 }
