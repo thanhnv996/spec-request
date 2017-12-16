@@ -1,9 +1,7 @@
 C:\Users\thanh\Documents\spec-request\api\src\main\java\restadmin\TicketsFacadeREST.java
 C:\Users\thanh\Documents\spec-request\api\src\main\java\entity\Role.java
 C:\Users\thanh\Documents\spec-request\api\src\main\java\restadmin\EmployeesFacadeREST.java
-C:\Users\thanh\Documents\spec-request\api\src\main\java\entity\TicketReads.java
 C:\Users\thanh\Documents\spec-request\api\src\main\java\manager\CommonBusiness.java
-C:\Users\thanh\Documents\spec-request\api\src\main\java\restadmin\TicketReadsFacadeREST.java
 C:\Users\thanh\Documents\spec-request\api\src\main\java\restadmin\AbstractFacade.java
 C:\Users\thanh\Documents\spec-request\api\src\main\java\restadmin\TeamsFacadeREST.java
 C:\Users\thanh\Documents\spec-request\api\src\main\java\config\Config.java
@@ -18,7 +16,6 @@ C:\Users\thanh\Documents\spec-request\api\src\main\java\entity\TicketThread.java
 C:\Users\thanh\Documents\spec-request\api\src\main\java\dataobject\PermissionInfo.java
 C:\Users\thanh\Documents\spec-request\api\src\main\java\entity\Permission.java
 C:\Users\thanh\Documents\spec-request\api\src\main\java\config\CORSFilter.java
-C:\Users\thanh\Documents\spec-request\api\src\main\java\entity\TicketReadsPK.java
 C:\Users\thanh\Documents\spec-request\api\src\main\java\restadmin\TicketAttributesFacadeREST.java
 C:\Users\thanh\Documents\spec-request\api\src\main\java\manager\SessionManager.java
 C:\Users\thanh\Documents\spec-request\api\src\main\java\dataobject\EmployeesInfo.java

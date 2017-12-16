@@ -84,16 +84,31 @@ public class TicketRest {
                 return z11.rs.auth.AuthUtil.makeTextResponse(Response.Status.BAD_REQUEST, "DATE_CANT_FORMAT");
             }
 
-            Tickets ticket = new Tickets(subject, content, priority, deadlineDate, assignedTo, createdBy, partIt, team);
+            Tickets ticket = new Tickets();
+            ticket.setSubject(subject);
+            ticket.setContent(content);
+            ticket.setPriority(priority);
+            ticket.setDeadline(deadlineDate);
+            ticket.setAssignedTo(assignedTo);
+            ticket.setCreatedBy(createdBy);
+            ticket.setPartcode(partIt);
+            ticket.setTeamId(team);
+
             ticket.setStatus(Config.STATUS_NEW);
-            em.persist(ticket);
-            
+            try {
+                em.persist(ticket);
+            } catch (Exception e) {
+                return z11.rs.auth.AuthUtil.makeTextResponse(Response.Status.BAD_REQUEST, "INVALID PARAM");
+            }
+
             /**
              * thêm người liên quan
              */
             try {
                 List<String> listRelatersId = new ArrayList<>(Arrays.asList(stringListRelaterId.split(",")));
                 try {
+                    listRelatersId.add(assignedTo.getId().toString());
+                    System.out.println("list relater id" + listRelatersId.toString());
                     for (String idStr : listRelatersId) {
                         int relaterId = Integer.valueOf(idStr);
                         Employees relater = commonBusiness.getUserById(relaterId);

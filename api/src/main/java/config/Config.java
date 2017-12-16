@@ -51,6 +51,9 @@ public class Config {
     public static final String STATUS_FEEDBACK = "feedback";
     public static final String STATUS_CLOSED = "closed";
     
+    public static final short STATUS_UNREAD = 0 ; 
+    public static final short STATUS_READ = 1 ; 
+    
 
 
     public static void main(String[] args) {

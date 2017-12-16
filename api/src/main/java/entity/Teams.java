@@ -41,7 +41,6 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Teams.findByCreatedAt", query = "SELECT t FROM Teams t WHERE t.createdAt = :createdAt"),
     @NamedQuery(name = "Teams.findByUpdatedAt", query = "SELECT t FROM Teams t WHERE t.updatedAt = :updatedAt")})
 public class Teams implements Serializable {
-
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

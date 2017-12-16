@@ -43,8 +43,8 @@ CREATE TABLE `employees` (
   `partcode` varchar(50) NOT NULL,
   `team_id` int(10) UNSIGNED NOT NULL,
   `remember_token` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `created_at` timestamp NULL DEFAULT NULL,
-  `updated_at` timestamp NULL DEFAULT NULL
+  `created_at` TIMESTAMP NOT NULL DEFAULT NOW(),
+  `updated_at` TIMESTAMP NOT NULL DEFAULT NOW() ON UPDATE now()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -143,8 +143,8 @@ CREATE TABLE `teams` (
   `id` int(10) UNSIGNED NOT NULL,
   `name` varchar(191) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `description` varchar(191) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `created_at` timestamp NULL DEFAULT NULL,
-  `updated_at` timestamp NULL DEFAULT NULL
+  `created_at` TIMESTAMP NOT NULL DEFAULT NOW(),
+  `updated_at` TIMESTAMP NOT NULL DEFAULT NOW() ON UPDATE now()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -167,8 +167,8 @@ CREATE TABLE `tickets` (
   `team_id` int(10) UNSIGNED NOT NULL,
   `resolved_at` datetime DEFAULT NULL,
   `closed_at` datetime DEFAULT NULL,
-  `created_at` timestamp NULL DEFAULT NULL,
-  `updated_at` timestamp NULL DEFAULT NULL,
+  `created_at` TIMESTAMP NOT NULL DEFAULT NOW(),
+  `updated_at` TIMESTAMP NOT NULL DEFAULT NOW() ON UPDATE now(),
   `deleted_at` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -200,16 +200,6 @@ CREATE TABLE `ticket_images` (
 
 -- --------------------------------------------------------
 
---
--- Cấu trúc bảng cho bảng `ticket_reads`
---
-
-CREATE TABLE `ticket_reads` (
-  `ticket_id` int(10) UNSIGNED NOT NULL,
-  `reader_id` int(10) UNSIGNED NOT NULL,
-  `status` tinyint(4) NOT NULL DEFAULT '0'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
 -- --------------------------------------------------------
 
 --
@@ -219,7 +209,8 @@ CREATE TABLE `ticket_reads` (
 CREATE TABLE `ticket_relaters` (
   `id` int(10) UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
   `ticket_id` int(10) UNSIGNED NOT NULL,
-  `employee_id` int(10) UNSIGNED NOT NULL
+  `employee_id` int(10) UNSIGNED NOT NULL,
+  `status_read` int(10) NOT NULL DEFAULT 0 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -235,8 +226,8 @@ CREATE TABLE `ticket_thread` (
   `content` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `type` tinyint(4) DEFAULT NULL,
   `note` varchar(191) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `created_at` timestamp NULL DEFAULT NULL,
-  `updated_at` timestamp NULL DEFAULT NULL
+ `created_at` TIMESTAMP NOT NULL DEFAULT NOW(),
+  `updated_at` TIMESTAMP NOT NULL DEFAULT NOW() ON UPDATE now()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
@@ -303,12 +294,6 @@ ALTER TABLE `ticket_attributes`
   ADD PRIMARY KEY (`id`) USING BTREE,
   ADD KEY `ticket_attributes_ticket_id_foreign` (`ticket_id`) USING BTREE;
 
---
--- Chỉ mục cho bảng `ticket_reads`
---
-ALTER TABLE `ticket_reads`
-  ADD PRIMARY KEY (`ticket_id`,`reader_id`) USING BTREE,
-  ADD KEY `ticket_reads_reader_id_foreign` (`reader_id`) USING BTREE;
 
 --
 -- Chỉ mục cho bảng `ticket_relaters`
@@ -392,13 +377,6 @@ ALTER TABLE `tickets`
 --
 ALTER TABLE `ticket_attributes`
   ADD CONSTRAINT `ticket_attributes_ticket_id_foreign` FOREIGN KEY (`ticket_id`) REFERENCES `tickets` (`id`) ON DELETE CASCADE;
-
---
--- Các ràng buộc cho bảng `ticket_reads`
---
-ALTER TABLE `ticket_reads`
-  ADD CONSTRAINT `ticket_reads_reader_id_foreign` FOREIGN KEY (`reader_id`) REFERENCES `employees` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `ticket_reads_ticket_id_foreign` FOREIGN KEY (`ticket_id`) REFERENCES `tickets` (`id`) ON DELETE CASCADE;
 
 --
 -- Các ràng buộc cho bảng `ticket_relaters`

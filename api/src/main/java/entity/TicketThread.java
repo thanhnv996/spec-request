@@ -40,7 +40,6 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "TicketThread.findByCreatedAt", query = "SELECT t FROM TicketThread t WHERE t.createdAt = :createdAt"),
     @NamedQuery(name = "TicketThread.findByUpdatedAt", query = "SELECT t FROM TicketThread t WHERE t.updatedAt = :updatedAt")})
 public class TicketThread implements Serializable {
-
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

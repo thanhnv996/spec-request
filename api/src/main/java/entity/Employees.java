@@ -16,8 +16,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
@@ -48,9 +46,6 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Employees.findByCreatedAt", query = "SELECT e FROM Employees e WHERE e.createdAt = :createdAt"),
     @NamedQuery(name = "Employees.findByUpdatedAt", query = "SELECT e FROM Employees e WHERE e.updatedAt = :updatedAt")})
 public class Employees implements Serializable {
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "employeeId")
-    private Collection<TicketRelaters> ticketRelatersCollection;
-
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -85,19 +80,14 @@ public class Employees implements Serializable {
     @Column(name = "updated_at")
     @Temporal(TemporalType.TIMESTAMP)
     private Date updatedAt;
-    @JoinTable(name = "ticket_relaters", joinColumns = {
-        @JoinColumn(name = "employee_id", referencedColumnName = "id")}, inverseJoinColumns = {
-        @JoinColumn(name = "ticket_id", referencedColumnName = "id")})
-    @ManyToMany
-    private Collection<Tickets> ticketsCollection;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "employees")
-    private Collection<TicketReads> ticketReadsCollection;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "assignedTo")
-    private Collection<Tickets> ticketsCollection1;
+    private Collection<Tickets> ticketsCollection;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "createdBy")
-    private Collection<Tickets> ticketsCollection2;
+    private Collection<Tickets> ticketsCollection1;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "employeeId")
     private Collection<TicketThread> ticketThreadCollection;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "employeeId")
+    private Collection<TicketRelaters> ticketRelatersCollection;
     @JoinColumn(name = "partcode", referencedColumnName = "partcode")
     @ManyToOne(optional = false)
     private PartIt partcode;
@@ -196,15 +186,6 @@ public class Employees implements Serializable {
     }
 
     @XmlTransient
-    public Collection<TicketReads> getTicketReadsCollection() {
-        return ticketReadsCollection;
-    }
-
-    public void setTicketReadsCollection(Collection<TicketReads> ticketReadsCollection) {
-        this.ticketReadsCollection = ticketReadsCollection;
-    }
-
-    @XmlTransient
     public Collection<Tickets> getTicketsCollection1() {
         return ticketsCollection1;
     }
@@ -214,21 +195,21 @@ public class Employees implements Serializable {
     }
 
     @XmlTransient
-    public Collection<Tickets> getTicketsCollection2() {
-        return ticketsCollection2;
-    }
-
-    public void setTicketsCollection2(Collection<Tickets> ticketsCollection2) {
-        this.ticketsCollection2 = ticketsCollection2;
-    }
-
-    @XmlTransient
     public Collection<TicketThread> getTicketThreadCollection() {
         return ticketThreadCollection;
     }
 
     public void setTicketThreadCollection(Collection<TicketThread> ticketThreadCollection) {
         this.ticketThreadCollection = ticketThreadCollection;
+    }
+
+    @XmlTransient
+    public Collection<TicketRelaters> getTicketRelatersCollection() {
+        return ticketRelatersCollection;
+    }
+
+    public void setTicketRelatersCollection(Collection<TicketRelaters> ticketRelatersCollection) {
+        this.ticketRelatersCollection = ticketRelatersCollection;
     }
 
     public PartIt getPartcode() {
@@ -278,15 +259,6 @@ public class Employees implements Serializable {
     @Override
     public String toString() {
         return "entity.Employees[ id=" + id + " ]";
-    }
-
-    @XmlTransient
-    public Collection<TicketRelaters> getTicketRelatersCollection() {
-        return ticketRelatersCollection;
-    }
-
-    public void setTicketRelatersCollection(Collection<TicketRelaters> ticketRelatersCollection) {
-        this.ticketRelatersCollection = ticketRelatersCollection;
     }
     
 }

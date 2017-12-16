@@ -33,7 +33,6 @@ public class ApplicationConfig extends Application {
         resources.add(restadmin.EmployeesFacadeREST.class);
         resources.add(restadmin.TeamsFacadeREST.class);
         resources.add(restadmin.TicketAttributesFacadeREST.class);
-        resources.add(restadmin.TicketReadsFacadeREST.class);
         resources.add(restadmin.TicketThreadFacadeREST.class);
         resources.add(restadmin.TicketsFacadeREST.class);
         resources.add(restapi.LoginRest.class);

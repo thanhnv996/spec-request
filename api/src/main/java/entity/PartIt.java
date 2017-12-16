@@ -33,7 +33,6 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "PartIt.findByPartcode", query = "SELECT p FROM PartIt p WHERE p.partcode = :partcode"),
     @NamedQuery(name = "PartIt.findByPartdesc", query = "SELECT p FROM PartIt p WHERE p.partdesc = :partdesc")})
 public class PartIt implements Serializable {
-
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)

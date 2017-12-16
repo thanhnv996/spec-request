@@ -35,7 +35,6 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "TicketAttributes.findByRating", query = "SELECT t FROM TicketAttributes t WHERE t.rating = :rating"),
     @NamedQuery(name = "TicketAttributes.findByReopened", query = "SELECT t FROM TicketAttributes t WHERE t.reopened = :reopened")})
 public class TicketAttributes implements Serializable {
-
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

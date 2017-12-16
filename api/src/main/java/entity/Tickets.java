@@ -17,7 +17,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
@@ -97,10 +96,6 @@ public class Tickets implements Serializable {
     @Column(name = "deleted_at")
     @Temporal(TemporalType.TIMESTAMP)
     private Date deletedAt;
-    @ManyToMany(mappedBy = "ticketsCollection")
-    private Collection<Employees> employeesCollection;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "tickets")
-    private Collection<TicketReads> ticketReadsCollection;
     @JoinColumn(name = "assigned_to", referencedColumnName = "id")
     @ManyToOne(optional = false)
     private Employees assignedTo;
@@ -112,10 +107,11 @@ public class Tickets implements Serializable {
     private PartIt partcode;
     @JoinColumn(name = "team_id", referencedColumnName = "id")
     @ManyToOne(optional = false)
-    @NotNull
     private Teams teamId;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "ticketId")
     private Collection<TicketThread> ticketThreadCollection;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "ticketId")
+    private Collection<TicketRelaters> ticketRelatersCollection;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "ticketId")
     private Collection<TicketAttributes> ticketAttributesCollection;
 
@@ -132,17 +128,6 @@ public class Tickets implements Serializable {
         this.content = content;
         this.priority = priority;
         this.deadline = deadline;
-    }
-
-    public Tickets(String subject, String content, short priority, Date deadline, Employees assignedTo, Employees createdBy, PartIt partcode, Teams team) {
-        this.subject = subject;
-        this.content = content;
-        this.priority = priority;
-        this.deadline = deadline;
-        this.assignedTo = assignedTo;
-        this.createdBy = createdBy;
-        this.partcode = partcode;
-        this.teamId = team;
     }
 
     public Integer getId() {
@@ -241,24 +226,6 @@ public class Tickets implements Serializable {
         this.deletedAt = deletedAt;
     }
 
-    @XmlTransient
-    public Collection<Employees> getEmployeesCollection() {
-        return employeesCollection;
-    }
-
-    public void setEmployeesCollection(Collection<Employees> employeesCollection) {
-        this.employeesCollection = employeesCollection;
-    }
-
-    @XmlTransient
-    public Collection<TicketReads> getTicketReadsCollection() {
-        return ticketReadsCollection;
-    }
-
-    public void setTicketReadsCollection(Collection<TicketReads> ticketReadsCollection) {
-        this.ticketReadsCollection = ticketReadsCollection;
-    }
-
     public Employees getAssignedTo() {
         return assignedTo;
     }
@@ -298,6 +265,15 @@ public class Tickets implements Serializable {
 
     public void setTicketThreadCollection(Collection<TicketThread> ticketThreadCollection) {
         this.ticketThreadCollection = ticketThreadCollection;
+    }
+
+    @XmlTransient
+    public Collection<TicketRelaters> getTicketRelatersCollection() {
+        return ticketRelatersCollection;
+    }
+
+    public void setTicketRelatersCollection(Collection<TicketRelaters> ticketRelatersCollection) {
+        this.ticketRelatersCollection = ticketRelatersCollection;
     }
 
     @XmlTransient

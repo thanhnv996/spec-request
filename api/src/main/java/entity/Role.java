@@ -33,7 +33,6 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Role.findByRolecode", query = "SELECT r FROM Role r WHERE r.rolecode = :rolecode"),
     @NamedQuery(name = "Role.findByRoledesc", query = "SELECT r FROM Role r WHERE r.roledesc = :roledesc")})
 public class Role implements Serializable {
-
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)

@@ -17,6 +17,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -28,7 +29,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "TicketRelaters.findAll", query = "SELECT t FROM TicketRelaters t"),
-    @NamedQuery(name = "TicketRelaters.findById", query = "SELECT t FROM TicketRelaters t WHERE t.id = :id")})
+    @NamedQuery(name = "TicketRelaters.findById", query = "SELECT t FROM TicketRelaters t WHERE t.id = :id"),
+    @NamedQuery(name = "TicketRelaters.findByStatusRead", query = "SELECT t FROM TicketRelaters t WHERE t.statusRead = :statusRead")})
 public class TicketRelaters implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
@@ -36,6 +38,10 @@ public class TicketRelaters implements Serializable {
     @Basic(optional = false)
     @Column(name = "id")
     private Integer id;
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "status_read")
+    private int statusRead;
     @JoinColumn(name = "employee_id", referencedColumnName = "id")
     @ManyToOne(optional = false)
     private Employees employeeId;
@@ -50,12 +56,25 @@ public class TicketRelaters implements Serializable {
         this.id = id;
     }
 
+    public TicketRelaters(Integer id, int statusRead) {
+        this.id = id;
+        this.statusRead = statusRead;
+    }
+
     public Integer getId() {
         return id;
     }
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public int getStatusRead() {
+        return statusRead;
+    }
+
+    public void setStatusRead(int statusRead) {
+        this.statusRead = statusRead;
     }
 
     public Employees getEmployeeId() {
