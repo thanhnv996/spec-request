@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Máy chủ: 127.0.0.1
--- Thời gian đã tạo: Th12 14, 2017 lúc 03:28 AM
+-- Thời gian đã tạo: Th12 16, 2017 lúc 05:41 PM
 -- Phiên bản máy phục vụ: 10.1.25-MariaDB
 -- Phiên bản PHP: 5.6.31
 
@@ -16,6 +16,7 @@ DROP DATABASE IF EXISTS spec_it_request;
 CREATE DATABASE spec_it_request; 
 
 USE `spec_it_request`;
+
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -46,12 +47,10 @@ CREATE TABLE `employees` (
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-
-
 -- --------------------------------------------------------
 
 --
--- Cấu trúc bảng cho bảng `part`
+-- Cấu trúc bảng cho bảng `part_it`
 --
 
 CREATE TABLE `part_it` (
@@ -60,7 +59,7 @@ CREATE TABLE `part_it` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
--- Đang đổ dữ liệu cho bảng `part`
+-- Đang đổ dữ liệu cho bảng `part_it`
 --
 
 INSERT INTO `part_it` (`partcode`, `partdesc`) VALUES
@@ -86,34 +85,33 @@ CREATE TABLE `password_resets` (
 --
 
 CREATE TABLE `permission` (
-  `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `id` int(10) UNSIGNED NOT NULL,
   `permission` varchar(50) NOT NULL,
   `rolecode` varchar(50) NOT NULL,
-  `partcode` varchar(50) NOT NULL,
-   PRIMARY KEY (`id`)
+  `partcode` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Đang đổ dữ liệu cho bảng `permission`
 --
 
-INSERT INTO `permission` (`permission`, `rolecode`, `partcode`) VALUES
-('pms_get_request_me', 'member', 'HANOI'),
-('pms_get_request_me', 'member', 'DANANG'),
-('pms_get_request_team', 'sublead', 'HANOI'),
-('pms_post_request', 'leader', 'HANOI'),
-('pms_post_request', 'leader', 'HANOI'),
-('pms_get_request_team', 'leader', 'HANOI'),
-('pms_put_request_team', 'leader', 'HANOI'),
-('pms_get_request_part', 'leader', 'HANOI'),
-('pms_get_request_team', 'sublead', 'DANANG'),
-('pms_post_request_team', 'sublead', 'DANANG'),
-('pms_put_request_team', 'sublead', 'DANANG'),
-('pms_get_request_part', 'leader', 'DANANG'),
-('pms_put_request_part', 'leader', 'DANANG'),
-('pms_post_request_part', 'leader', 'DANANG'),
-('pms_close_request', 'leader', 'DANANG'),
-('pms_get_request_team', 'leader', 'DANANG');
+INSERT INTO `permission` (`id`, `permission`, `rolecode`, `partcode`) VALUES
+(1, 'pms_get_request_me', 'member', 'HANOI'),
+(2, 'pms_get_request_me', 'member', 'DANANG'),
+(3, 'pms_get_request_team', 'sublead', 'HANOI'),
+(4, 'pms_post_request', 'leader', 'HANOI'),
+(5, 'pms_post_request', 'leader', 'HANOI'),
+(6, 'pms_get_request_team', 'leader', 'HANOI'),
+(7, 'pms_put_request_team', 'leader', 'HANOI'),
+(8, 'pms_get_request_part', 'leader', 'HANOI'),
+(9, 'pms_get_request_team', 'sublead', 'DANANG'),
+(10, 'pms_post_request_team', 'sublead', 'DANANG'),
+(11, 'pms_put_request_team', 'sublead', 'DANANG'),
+(12, 'pms_get_request_part', 'leader', 'DANANG'),
+(13, 'pms_put_request_part', 'leader', 'DANANG'),
+(14, 'pms_post_request_part', 'leader', 'DANANG'),
+(15, 'pms_close_request', 'leader', 'DANANG'),
+(16, 'pms_get_request_team', 'leader', 'DANANG');
 
 -- --------------------------------------------------------
 
@@ -240,7 +238,6 @@ CREATE TABLE `ticket_thread` (
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-
 --
 -- Chỉ mục cho các bảng đã đổ
 --
@@ -252,10 +249,11 @@ ALTER TABLE `employees`
   ADD PRIMARY KEY (`id`) USING BTREE,
   ADD UNIQUE KEY `employees_email_unique` (`email`) USING BTREE,
   ADD KEY `USER_ROLE` (`rolecode`),
-  ADD KEY `USER_PART` (`partcode`);
+  ADD KEY `USER_PART` (`partcode`),
+  ADD KEY `employee_team` (`team_id`);
 
 --
--- Chỉ mục cho bảng `part`
+-- Chỉ mục cho bảng `part_it`
 --
 ALTER TABLE `part_it`
   ADD PRIMARY KEY (`partcode`);
@@ -270,6 +268,7 @@ ALTER TABLE `password_resets`
 -- Chỉ mục cho bảng `permission`
 --
 ALTER TABLE `permission`
+  ADD PRIMARY KEY (`id`),
   ADD KEY `rolecode` (`rolecode`),
   ADD KEY `partcode` (`partcode`);
 
@@ -293,7 +292,8 @@ ALTER TABLE `tickets`
   ADD PRIMARY KEY (`id`) USING BTREE,
   ADD KEY `tickets_created_by_foreign` (`created_by`) USING BTREE,
   ADD KEY `tickets_assigned_to_foreign` (`assigned_to`) USING BTREE,
-  ADD KEY `tickets_team_id_foreign` (`team_id`) USING BTREE;
+  ADD KEY `tickets_team_id_foreign` (`team_id`) USING BTREE,
+  ADD KEY `tickets_part_foreign` (`partcode`);
 
 --
 -- Chỉ mục cho bảng `ticket_attributes`
@@ -332,12 +332,17 @@ ALTER TABLE `ticket_thread`
 -- AUTO_INCREMENT cho bảng `employees`
 --
 ALTER TABLE `employees`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+--
+-- AUTO_INCREMENT cho bảng `permission`
+--
+ALTER TABLE `permission`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 --
 -- AUTO_INCREMENT cho bảng `teams`
 --
 ALTER TABLE `teams`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 --
 -- AUTO_INCREMENT cho bảng `tickets`
 --
@@ -362,8 +367,8 @@ ALTER TABLE `ticket_thread`
 --
 ALTER TABLE `employees`
   ADD CONSTRAINT `employee_part` FOREIGN KEY (`partcode`) REFERENCES `part_it` (`partcode`) ON DELETE CASCADE,
-  ADD CONSTRAINT `employee_team` FOREIGN KEY (`team_id`) REFERENCES `teams` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `employee_role` FOREIGN KEY (`rolecode`) REFERENCES `role` (`rolecode`) ON DELETE CASCADE;
+  ADD CONSTRAINT `employee_role` FOREIGN KEY (`rolecode`) REFERENCES `role` (`rolecode`) ON DELETE CASCADE,
+  ADD CONSTRAINT `employee_team` FOREIGN KEY (`team_id`) REFERENCES `teams` (`id`) ON DELETE CASCADE;
 
 --
 -- Các ràng buộc cho bảng `permission`
@@ -408,14 +413,6 @@ ALTER TABLE `ticket_thread`
   ADD CONSTRAINT `ticket_thread_employee_id_foreign` FOREIGN KEY (`employee_id`) REFERENCES `employees` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `ticket_thread_ticket_id_foreign` FOREIGN KEY (`ticket_id`) REFERENCES `tickets` (`id`) ON DELETE CASCADE;
 COMMIT;
-
--- Insert data
-INSERT INTO `teams` (`id`, `name`) 
-VALUES (NULL, 'team 1'),
-(NULL, 'team 2');
-INSERT INTO `employees` (`id`, `name`, `email`, `password`, `url_image`, `rolecode`, `partcode`, `team_id`, `remember_token`, `created_at`, `updated_at`) 
-VALUES (NULL, 'Thanh', 'thanh@gmail.com', '123456', NULL, 'leader', 'HANOI', '1', NULL, NULL, NULL),
- (NULL, 'Nguyen', 'nguyen@gmail.com', '123456', NULL, 'member', 'DANANG', '1', NULL, NULL, NULL);
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

@@ -2,6 +2,7 @@ package entity;
 
 import entity.PartIt;
 import entity.Role;
+import entity.Teams;
 import entity.TicketReads;
 import entity.TicketThread;
 import entity.Tickets;
@@ -11,7 +12,7 @@ import javax.persistence.metamodel.CollectionAttribute;
 import javax.persistence.metamodel.SingularAttribute;
 import javax.persistence.metamodel.StaticMetamodel;
 
-@Generated(value="EclipseLink-2.5.2.v20140319-rNA", date="2017-12-14T19:25:01")
+@Generated(value="EclipseLink-2.5.2.v20140319-rNA", date="2017-12-16T22:58:45")
 @StaticMetamodel(Employees.class)
 public class Employees_ { 
 
@@ -21,8 +22,8 @@ public class Employees_ {
     public static volatile SingularAttribute<Employees, Date> createdAt;
     public static volatile SingularAttribute<Employees, String> password;
     public static volatile CollectionAttribute<Employees, Tickets> ticketsCollection2;
-    public static volatile SingularAttribute<Employees, Integer> teamId;
     public static volatile CollectionAttribute<Employees, Tickets> ticketsCollection1;
+    public static volatile SingularAttribute<Employees, Teams> teamId;
     public static volatile SingularAttribute<Employees, String> name;
     public static volatile SingularAttribute<Employees, PartIt> partcode;
     public static volatile SingularAttribute<Employees, Integer> id;
