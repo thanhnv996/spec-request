@@ -51,9 +51,6 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Tickets.findByUpdatedAt", query = "SELECT t FROM Tickets t WHERE t.updatedAt = :updatedAt"),
     @NamedQuery(name = "Tickets.findByDeletedAt", query = "SELECT t FROM Tickets t WHERE t.deletedAt = :deletedAt")})
 public class Tickets implements Serializable {
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "ticketId")
-    private Collection<TicketRelaters> ticketRelatersCollection;
-
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -71,8 +68,9 @@ public class Tickets implements Serializable {
     @Size(min = 1, max = 65535)
     @Column(name = "content")
     private String content;
+    @Size(max = 25)
     @Column(name = "status")
-    private Short status;
+    private String status;
     @Basic(optional = false)
     @NotNull
     @Column(name = "priority")
@@ -171,11 +169,11 @@ public class Tickets implements Serializable {
         this.content = content;
     }
 
-    public Short getStatus() {
+    public String getStatus() {
         return status;
     }
 
-    public void setStatus(Short status) {
+    public void setStatus(String status) {
         this.status = status;
     }
 
@@ -335,14 +333,5 @@ public class Tickets implements Serializable {
     public String toString() {
         return "entity.Tickets[ id=" + id + " ]";
     }
-
-    @XmlTransient
-    public Collection<TicketRelaters> getTicketRelatersCollection() {
-        return ticketRelatersCollection;
-    }
-
-    public void setTicketRelatersCollection(Collection<TicketRelaters> ticketRelatersCollection) {
-        this.ticketRelatersCollection = ticketRelatersCollection;
-    }
-
+    
 }

@@ -85,8 +85,12 @@ public class TicketRest {
             }
 
             Tickets ticket = new Tickets(subject, content, priority, deadlineDate, assignedTo, createdBy, partIt, team);
+            ticket.setStatus(Config.STATUS_NEW);
             em.persist(ticket);
-
+            
+            /**
+             * thêm người liên quan
+             */
             try {
                 List<String> listRelatersId = new ArrayList<>(Arrays.asList(stringListRelaterId.split(",")));
                 try {

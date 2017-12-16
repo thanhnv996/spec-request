@@ -44,56 +44,13 @@ public class Config {
     public static final String PMS_GET_PERMISSIONS = "pms_get_permissions";
     public static final String PMS_PUT_PERMISSIONS = "pms_put_permissions";
     
-    public static final String PMS_POST_ROLES = "pms_post_roles";
-    public static final String PMS_PUT_ROLES = "pms_put_roles";
-    public static final String PMS_GET_ROLES = "pms_get_roles";
-    public static final String PMS_DELETE_ROLES = "pms_delete_roles";
+    public static final String STATUS_NEW = "new";
+    public static final String STATUS_CANCELLED = "cancelled";
+    public static final String STATUS_INPROGRESS = "inprogress";
+    public static final String STATUS_RESOLVED = "resolved";
+    public static final String STATUS_FEEDBACK = "feedback";
+    public static final String STATUS_CLOSED = "closed";
     
-    public static final String PMS_POST_ROLE_PMS = "pms_post_role_pms";
-    public static final String PMS_PUT_ROLE_PMS = "pms_put_role_pms";
-    public static final String PMS_GET_ROLE_PMS = "pms_get_role_pms";
-    public static final String PMS_DELETE_ROLE_PMS = "pms_delete_role_pms";
-    
-    public static final String PMS_GET_PURCHASES = "pms_get_purchases";
-    public static final String PMS_POST_PURCHASES = "pms_post_purchases";
-    public static final String PMS_PUT_PURCHASES = "pms_put_purchases";
-    public static final String PMS_DELETE_PURCHASES = "pms_delete_purchases";
-    
-    public static final String PMS_GET_PAYMENTS = "pms_get_payments";
-    public static final String PMS_POST_PAYMENTS = "pms_post_payments";
-    public static final String PMS_PUT_PAYMENTS = "pms_put_payments";
-    public static final String PMS_DELETE_PAYMENTS = "pms_delete_payments";
-    
-    public static final String PMS_GET_SESSIONS = "pms_get_sessions";
-    public static final String PMS_POST_SESSIONS = "pms_post_sessions";
-    public static final String PMS_PUT_SESSIONS = "pms_put_sessions";
-    public static final String PMS_DELETE_SESSIONS = "pms_delete_sessions";
-    
-    public static final String PMS_GET_USERS = "pms_get_users";
-    public static final String PMS_POST_USERS = "pms_post_users";
-    public static final String PMS_PUT_USERS = "pms_put_users";
-    public static final String PMS_DELETE_USERS = "pms_delete_users";
-    public static final String PMS_PUT_BALANCE_USERS = "pms_put_balance_users";
-    
-    public static final String PMS_GET_APPS = "pms_get_apps";
-    public static final String PMS_PUT_APPS = "pms_put_apps";
-    public static final String PMS_POST_APPS = "pms_post_apps";
-    public static final String PMS_DELETE_APPS = "pms_delete_apps";
-    
-    public static final String PMS_GET_PRODUCTS = "pms_get_products";
-    public static final String PMS_PUT_PRODUCTS = "pms_put_products";
-    public static final String PMS_POST_PRODUCTS = "pms_post_products";
-    public static final String PMS_DELETE_PRODUCTS = "pms_delete_products";
-    
-    public static final String PMS_GET_USER_APPS = "pms_get_user_apps";
-    public static final String PMS_PUT_USER_APPS = "pms_put_userapps";
-    public static final String PMS_POST_USER_APPS = "pms_post_userapps";
-    public static final String PMS_DELETE_USER_APPS = "pms_delete_userapps";
-    
-    public static final String PMS_GET_EXTERNAL_LOGINS = "pms_get_external_logins";
-    public static final String PMS_PUT_EXTERNAL_LOGINS = "pms_put_external_logins";
-    public static final String PMS_POST_EXTERNAL_LOGINS = "pms_post_external_logins";
-    public static final String PMS_DELETE_EXTERNAL_LOGINS = "pms_delete_external_logins";
 
 
     public static void main(String[] args) {

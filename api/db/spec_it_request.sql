@@ -158,7 +158,7 @@ CREATE TABLE `tickets` (
   `subject` varchar(191) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `content` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_by` int(10) UNSIGNED NOT NULL,
-  `status` tinyint(4) DEFAULT NULL,
+  `status` varchar(25) DEFAULT NULL,
   `priority` tinyint(4) NOT NULL,
   `deadline` datetime NOT NULL,
   `assigned_to` int(10) UNSIGNED NOT NULL,
