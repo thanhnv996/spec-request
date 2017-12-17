@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Máy chủ: 127.0.0.1
--- Thời gian đã tạo: Th12 16, 2017 lúc 05:41 PM
+-- Thời gian đã tạo: Th12 17, 2017 lúc 09:39 AM
 -- Phiên bản máy phục vụ: 10.1.25-MariaDB
 -- Phiên bản PHP: 5.6.31
 
@@ -16,7 +16,6 @@ DROP DATABASE IF EXISTS spec_it_request;
 CREATE DATABASE spec_it_request; 
 
 USE `spec_it_request`;
-
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -43,8 +42,8 @@ CREATE TABLE `employees` (
   `partcode` varchar(50) NOT NULL,
   `team_id` int(10) UNSIGNED NOT NULL,
   `remember_token` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `created_at` TIMESTAMP NOT NULL DEFAULT NOW(),
-  `updated_at` TIMESTAMP NOT NULL DEFAULT NOW() ON UPDATE now()
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -107,12 +106,13 @@ INSERT INTO `permission` (`id`, `permission`, `rolecode`, `partcode`) VALUES
 (9, 'pms_get_request_team', 'sublead', 'DANANG'),
 (10, 'pms_post_request_team', 'sublead', 'DANANG'),
 (11, 'pms_put_request_team', 'sublead', 'DANANG'),
-(12, 'pms_put_request_team', 'leader', 'DANANG'),
-(13, 'pms_get_request_part', 'leader', 'DANANG'),
-(14, 'pms_put_request_part', 'leader', 'DANANG'),
-(15, 'pms_post_request_part', 'leader', 'DANANG'),
-(16, 'pms_close_request', 'leader', 'DANANG'),
-(17, 'pms_get_request_team', 'leader', 'DANANG');
+(12, 'pms_get_request_part', 'leader', 'DANANG'),
+(13, 'pms_put_request_part', 'leader', 'DANANG'),
+(14, 'pms_post_request_part', 'leader', 'DANANG'),
+(15, 'pms_close_request', 'leader', 'DANANG'),
+(16, 'pms_get_request_team', 'leader', 'DANANG'),
+(17, 'pms_put_request_team', 'leader', 'DANANG'),
+(18, 'pms_all', 'leader', 'DANANG');
 
 -- --------------------------------------------------------
 
@@ -144,8 +144,8 @@ CREATE TABLE `teams` (
   `id` int(10) UNSIGNED NOT NULL,
   `name` varchar(191) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `description` varchar(191) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `created_at` TIMESTAMP NOT NULL DEFAULT NOW(),
-  `updated_at` TIMESTAMP NOT NULL DEFAULT NOW() ON UPDATE now()
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -168,8 +168,8 @@ CREATE TABLE `tickets` (
   `team_id` int(10) UNSIGNED NOT NULL,
   `resolved_at` datetime DEFAULT NULL,
   `closed_at` datetime DEFAULT NULL,
-  `created_at` TIMESTAMP NOT NULL DEFAULT NOW(),
-  `updated_at` TIMESTAMP NOT NULL DEFAULT NOW() ON UPDATE now(),
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `deleted_at` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -201,17 +201,23 @@ CREATE TABLE `ticket_images` (
 
 -- --------------------------------------------------------
 
--- --------------------------------------------------------
-
 --
 -- Cấu trúc bảng cho bảng `ticket_relaters`
 --
 
 CREATE TABLE `ticket_relaters` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `ticket_id` int(10) UNSIGNED NOT NULL,
+  `employee_id` int(10) UNSIGNED NOT NULL,
+  `status_read` int(10) NOT NULL DEFAULT '0'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+CREATE TABLE `reader` (
   `id` int(10) UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
   `ticket_id` int(10) UNSIGNED NOT NULL,
   `employee_id` int(10) UNSIGNED NOT NULL,
-  `status_read` int(10) NOT NULL DEFAULT 0 
+  `status_read` int(10) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -227,8 +233,8 @@ CREATE TABLE `ticket_thread` (
   `content` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `type` tinyint(4) DEFAULT NULL,
   `note` varchar(191) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
- `created_at` TIMESTAMP NOT NULL DEFAULT NOW(),
-  `updated_at` TIMESTAMP NOT NULL DEFAULT NOW() ON UPDATE now()
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
@@ -295,11 +301,11 @@ ALTER TABLE `ticket_attributes`
   ADD PRIMARY KEY (`id`) USING BTREE,
   ADD KEY `ticket_attributes_ticket_id_foreign` (`ticket_id`) USING BTREE;
 
-
 --
 -- Chỉ mục cho bảng `ticket_relaters`
 --
 ALTER TABLE `ticket_relaters`
+  ADD PRIMARY KEY (`id`),
   ADD KEY `ticket_relaters_ticket_id_foreign` (`ticket_id`) USING BTREE,
   ADD KEY `ticket_relaters_employee_id_foreign` (`employee_id`) USING BTREE;
 
@@ -319,32 +325,37 @@ ALTER TABLE `ticket_thread`
 -- AUTO_INCREMENT cho bảng `employees`
 --
 ALTER TABLE `employees`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 --
 -- AUTO_INCREMENT cho bảng `permission`
 --
 ALTER TABLE `permission`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 --
 -- AUTO_INCREMENT cho bảng `teams`
 --
 ALTER TABLE `teams`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 --
 -- AUTO_INCREMENT cho bảng `tickets`
 --
 ALTER TABLE `tickets`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 --
 -- AUTO_INCREMENT cho bảng `ticket_attributes`
 --
 ALTER TABLE `ticket_attributes`
   MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 --
+-- AUTO_INCREMENT cho bảng `ticket_relaters`
+--
+ALTER TABLE `ticket_relaters`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
+--
 -- AUTO_INCREMENT cho bảng `ticket_thread`
 --
 ALTER TABLE `ticket_thread`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=38;
 --
 -- Các ràng buộc cho các bảng đã đổ
 --

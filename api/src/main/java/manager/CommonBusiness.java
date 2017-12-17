@@ -10,6 +10,8 @@ import entity.Employees;
 import entity.PartIt;
 import entity.Permission;
 import entity.Permission_;
+import entity.Reader;
+import entity.Reader_;
 import entity.Role;
 import entity.Teams;
 import entity.TicketRelaters;
@@ -518,4 +520,45 @@ public class CommonBusiness {
         };
         return entity;
     }
+
+    /**
+     * Đánh dấu đọc hoặc chwua đọc
+     */
+    public void markRead(int ticket_id, int employee_id, short status) throws Exception {
+        checkStatusRead(status);
+        if (status == 1) {
+            Reader reader = new Reader();
+            reader.setEmployeeId(employee_id);
+            reader.setStatusRead(status);
+            reader.setTicketId(ticket_id);
+            em.persist(reader);
+        } else if (status == 0) {
+            CriteriaBuilder cb = em.getCriteriaBuilder();
+            javax.persistence.criteria.CriteriaQuery cq = cb.createQuery();
+            Root<Reader> root = cq.from(Reader.class);
+            cq.select(root);
+            cq.where(
+                    cb.and(
+                            cb.equal(root.get(Reader_.employeeId), employee_id),
+                            cb.equal(root.get(Reader_.ticketId), ticket_id)
+                    )
+            );
+            List<Reader> listReader = em.createQuery(cq).getResultList();
+            if (listReader.size() > 0) {
+                for (Reader r : listReader) {
+                    em.remove(r);
+                }
+            }
+
+        }
+    }
+
+    public void checkStatusRead(short status) throws Exception {
+        if (status == 0 || status == 1) {
+            return;
+        } else {
+            throw new Exception("STATUS READ MUST BE 0 OR 1");
+        }
+    }
+
 }

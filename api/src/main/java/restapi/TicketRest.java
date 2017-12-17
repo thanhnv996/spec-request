@@ -596,7 +596,7 @@ public class TicketRest {
             try {
                 commonBusiness.checkPermission(employee.getId(), Config.PMS_GET_REQUEST_PART);
             } catch (Exception ex) {
-                return z11.rs.auth.AuthUtil.makeTextResponse(Response.Status.METHOD_NOT_ALLOWED, "NOT_PERMISSION");
+                return z11.rs.auth.AuthUtil.makeTextResponse(Response.Status.BAD_REQUEST, "NOT_PERMISSION");
             }
 
             GenericEntity<List<Tickets>> entity = commonBusiness.getTicketOfPartIt(partcode);
@@ -606,7 +606,7 @@ public class TicketRest {
             return restException.makeHttpResponse();
         }
     }
-    
+
     /**
      * Công việc của bộ phận IT
      *
@@ -633,6 +633,33 @@ public class TicketRest {
             return Response.status(Response.Status.OK).entity(entity).build();
         } catch (RestException restException) {
             return restException.makeHttpResponse();
+        }
+    }
+
+    /**
+     * Đánh dấu hoặc bỏ đánh dấu
+     *
+     * @param request
+     * @return
+     */
+    @POST
+    @Path("mark")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})
+    public Response markReadTicket(
+            @FormParam("ticket_id") @NotNull int ticket_id,
+            @FormParam("status") @NotNull short status,
+            @Context HttpServletRequest request) throws Exception {
+        try {
+            Integer userId = sessionManager.getSessionUserId(request);
+            Employees employee = commonBusiness.getUserById(userId);
+            
+            commonBusiness.markRead(ticket_id,userId,status);
+
+            return Response.status(Response.Status.OK).entity("OK").build();
+        } catch (RestException restException) {
+            return restException.makeHttpResponse();
+        } catch(Exception e){
+            return z11.rs.auth.AuthUtil.makeTextResponse(Response.Status.BAD_REQUEST, e.getMessage());
         }
     }
 }
