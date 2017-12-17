@@ -50,6 +50,8 @@ public class Config {
     public static final short STATUS_READ = 1;
 
     public static final String PMS_PUT_REQUEST_TEAM = "pms_put_request_team";
+    public static final String PMS_GET_REQUEST_TEAM = "pms_get_request_team";
+    public static final String PMS_GET_REQUEST_PART = "pms_get_request_part";
     public static final String PMS_ALL = "pms_all";
 
     public static final String PRIORITY_1 = "Thấp";

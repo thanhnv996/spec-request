@@ -30,11 +30,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import manager.CommonBusiness;
@@ -223,8 +226,8 @@ public class TicketRest {
                          * Thêm nguyên nhân vào bảng comment
                          */
                         TicketThread comment = new TicketThread();
-                        String ratingstr = "\nThay đổi deadline : từ" + ticket.getDeadline()
-                                + " -> " + deadlineDate + "\n";
+                        String ratingstr = "\nThay đổi deadline : từ" + df.format(ticket.getDeadline())
+                                + " -> " + df.format(deadlineDate) + "\n";
                         comment.setContent(ratingstr + comment_rating);
                         comment.setEmployeeId(employee);
                         comment.setTicketId(ticket);
@@ -476,6 +479,160 @@ public class TicketRest {
             return restException.makeHttpResponse();
         } catch (Exception ex) {
             return z11.rs.auth.AuthUtil.makeTextResponse(Response.Status.BAD_REQUEST, ex.getMessage());
+        }
+    }
+
+    /**
+     * Công việc tôi yêu cầu
+     *
+     * @param request
+     * @return
+     */
+    @GET
+    @Path("me/created")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})
+    public Response getTicketMeCreate(
+            @Context HttpServletRequest request) {
+        try {
+            Integer userId = sessionManager.getSessionUserId(request);
+            Employees employee = commonBusiness.getUserById(userId);
+
+            GenericEntity<List<Tickets>> entity = commonBusiness.getTicketMeCreate(employee);
+
+            return Response.status(Response.Status.OK).entity(entity).build();
+        } catch (RestException restException) {
+            return restException.makeHttpResponse();
+        }
+    }
+
+    /**
+     * Công việc tôi liên quan
+     */
+    @GET
+    @Path("me/related")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})
+    public Response getTicketMeRelate(
+            @Context HttpServletRequest request) {
+        try {
+            Integer userId = sessionManager.getSessionUserId(request);
+            Employees employee = commonBusiness.getUserById(userId);
+
+            GenericEntity<List<TicketRelaters>> entity = commonBusiness.getTicketMeRelate(employee);
+
+            return Response.status(Response.Status.OK).entity(entity).build();
+        } catch (RestException restException) {
+            return restException.makeHttpResponse();
+        }
+    }
+
+    /**
+     * Công việc tôi được giao
+     *
+     * @param request
+     * @return
+     */
+    @GET
+    @Path("me/requested")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})
+    public Response getTicketForMe(
+            @Context HttpServletRequest request) {
+        try {
+            Integer userId = sessionManager.getSessionUserId(request);
+            Employees employee = commonBusiness.getUserById(userId);
+
+            GenericEntity<List<Tickets>> entity = commonBusiness.getAllAssignedTicket(employee);
+
+            return Response.status(Response.Status.OK).entity(entity).build();
+        } catch (RestException restException) {
+            return restException.makeHttpResponse();
+        }
+    }
+
+    /**
+     * Công việc của team
+     *
+     * @param request
+     * @return
+     */
+    @GET
+    @Path("team")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})
+    public Response getTicketForTeam(
+            @Context HttpServletRequest request) {
+        try {
+            Integer userId = sessionManager.getSessionUserId(request);
+            Employees employee = commonBusiness.getUserById(userId);
+
+            try {
+                commonBusiness.checkPermission(employee.getId(), Config.PMS_GET_REQUEST_TEAM);
+            } catch (Exception ex) {
+                return z11.rs.auth.AuthUtil.makeTextResponse(Response.Status.BAD_REQUEST, "NOT_PERMISSION");
+            }
+
+            GenericEntity<List<Tickets>> entity = commonBusiness.getTicketOfTeam(employee.getTeamId().getId());
+
+            return Response.status(Response.Status.OK).entity(entity).build();
+        } catch (RestException restException) {
+            return restException.makeHttpResponse();
+        }
+    }
+
+    /**
+     * Công việc của bộ phận IT
+     *
+     * @param request
+     * @return
+     */
+    @GET
+    @Path("part/{partcode}")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})
+    public Response getTicketPartIT(
+            @PathParam("partcode") String partcode,
+            @Context HttpServletRequest request) {
+        try {
+            Integer userId = sessionManager.getSessionUserId(request);
+            Employees employee = commonBusiness.getUserById(userId);
+
+            try {
+                commonBusiness.checkPermission(employee.getId(), Config.PMS_GET_REQUEST_PART);
+            } catch (Exception ex) {
+                return z11.rs.auth.AuthUtil.makeTextResponse(Response.Status.METHOD_NOT_ALLOWED, "NOT_PERMISSION");
+            }
+
+            GenericEntity<List<Tickets>> entity = commonBusiness.getTicketOfPartIt(partcode);
+
+            return Response.status(Response.Status.OK).entity(entity).build();
+        } catch (RestException restException) {
+            return restException.makeHttpResponse();
+        }
+    }
+    
+    /**
+     * Công việc của bộ phận IT
+     *
+     * @param request
+     * @return
+     */
+    @GET
+    @Path("part")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})
+    public Response getTicketPart(
+            @Context HttpServletRequest request) {
+        try {
+            Integer userId = sessionManager.getSessionUserId(request);
+            Employees employee = commonBusiness.getUserById(userId);
+
+            try {
+                commonBusiness.checkPermission(employee.getId(), Config.PMS_GET_REQUEST_PART);
+            } catch (Exception ex) {
+                return z11.rs.auth.AuthUtil.makeTextResponse(Response.Status.BAD_REQUEST, "NOT_PERMISSION");
+            }
+
+            GenericEntity<List<Tickets>> entity = commonBusiness.getTicketOfPartIt(null);
+
+            return Response.status(Response.Status.OK).entity(entity).build();
+        } catch (RestException restException) {
+            return restException.makeHttpResponse();
         }
     }
 }

@@ -15,6 +15,7 @@ import entity.Teams;
 import entity.TicketRelaters;
 import entity.TicketRelaters_;
 import entity.Tickets;
+import entity.Tickets_;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -105,7 +106,7 @@ public class CommonBusiness {
     public PartIt getPartByCode(String code) throws NotFoundException {
         PartIt partIt = em.find(PartIt.class, code);
         if (partIt == null) {
-            throw new NotFoundException("Not found userid:" + partIt);
+            throw new NotFoundException("Not found partIt:" + code);
         }
         return partIt;
     }
@@ -368,22 +369,22 @@ public class CommonBusiness {
 //        }
 //    }
 //    
-    public boolean checkTicketRelater(Employees relater , Tickets ticket){
+
+    public boolean checkTicketRelater(Employees relater, Tickets ticket) {
         CriteriaBuilder cb = em.getCriteriaBuilder();
         javax.persistence.criteria.CriteriaQuery cq = cb.createQuery();
         Root<TicketRelaters> root = cq.from(TicketRelaters.class);
         cq.select(root);
         cq.where(
                 cb.and(
-                        cb.equal(root.get(TicketRelaters_.employeeId),relater),
-                        cb.equal(root.get(TicketRelaters_.ticketId),ticket)
+                        cb.equal(root.get(TicketRelaters_.employeeId), relater),
+                        cb.equal(root.get(TicketRelaters_.ticketId), ticket)
                 )
         );
         List<TicketRelaters> list = em.createQuery(cq).getResultList();
-        if(list.size()>0){
+        if (list.size() > 0) {
             return true;
-        }
-        else{
+        } else {
             return false;
         }
     }
@@ -438,5 +439,83 @@ public class CommonBusiness {
         } else {
             throw new Exception("RATING MUST 1->4 ");
         }
+    }
+
+    /**
+     * GET các công việc được giao
+     */
+    public GenericEntity<List<Tickets>> getAllAssignedTicket(Employees employee) {
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        javax.persistence.criteria.CriteriaQuery cq = cb.createQuery();
+        Root<Tickets> root = cq.from(Tickets.class);
+        cq.select(root);
+        cq.where(cb.equal(root.get(Tickets_.assignedTo), employee));
+        List<Tickets> listTicket = em.createQuery(cq).getResultList();
+        GenericEntity<List<Tickets>> entity = new GenericEntity<List<Tickets>>(listTicket) {
+        };
+        return entity;
+    }
+
+    /**
+     * GET các công việc đã tạo
+     */
+    public GenericEntity<List<Tickets>> getTicketMeCreate(Employees employee) {
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        javax.persistence.criteria.CriteriaQuery cq = cb.createQuery();
+        Root<Tickets> root = cq.from(Tickets.class);
+        cq.select(root);
+        cq.where(cb.equal(root.get(Tickets_.createdBy), employee));
+        List<Tickets> listTicket = em.createQuery(cq).getResultList();
+        GenericEntity<List<Tickets>> entity = new GenericEntity<List<Tickets>>(listTicket) {
+        };
+        return entity;
+    }
+
+    /**
+     * GET các công việc liên quan
+     */
+    public GenericEntity<List<TicketRelaters>> getTicketMeRelate(Employees employee) {
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        javax.persistence.criteria.CriteriaQuery cq = cb.createQuery();
+        Root<TicketRelaters> root = cq.from(TicketRelaters.class);
+        cq.select(root);
+        cq.where(cb.equal(root.get(TicketRelaters_.employeeId), employee));
+        List<TicketRelaters> listTicket = em.createQuery(cq).getResultList();
+        GenericEntity<List<TicketRelaters>> entity = new GenericEntity<List<TicketRelaters>>(listTicket) {
+        };
+        return entity;
+    }
+
+    /**
+     * GET các công việc trong team
+     */
+    public GenericEntity<List<Tickets>> getTicketOfTeam(int teamId) throws NotFoundException {
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        javax.persistence.criteria.CriteriaQuery cq = cb.createQuery();
+        Root<Tickets> root = cq.from(Tickets.class);
+        cq.select(root);
+        cq.where(cb.equal(root.get(Tickets_.teamId), getTeamsById(teamId)));
+        List<Tickets> listTicket = em.createQuery(cq).getResultList();
+        GenericEntity<List<Tickets>> entity = new GenericEntity<List<Tickets>>(listTicket) {
+        };
+        return entity;
+    }
+
+    /**
+     * GET các công việc của partIT
+     */
+    public GenericEntity<List<Tickets>> getTicketOfPartIt(String partcode) throws NotFoundException {
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        javax.persistence.criteria.CriteriaQuery cq = cb.createQuery();
+        Root<Tickets> root = cq.from(Tickets.class);
+        cq.select(root);
+        if (partcode != null) {
+            cq.where(cb.equal(root.get(Tickets_.partcode), getPartByCode(partcode)));
+        }
+        List<Tickets> listTicket = em.createQuery(cq).getResultList();
+
+        GenericEntity<List<Tickets>> entity = new GenericEntity<List<Tickets>>(listTicket) {
+        };
+        return entity;
     }
 }
