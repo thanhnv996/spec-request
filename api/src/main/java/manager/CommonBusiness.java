@@ -224,15 +224,15 @@ public class CommonBusiness {
             throw new Exception("TICKET_CAN'T_CHANGE");
         }
     }
-//
-////    public void checkStatusOfTicketToChangeStatus(int ticket_id) throws NotFoundException, Exception {
-////        Tickets ticket = getTicketById(ticket_id);
-////        String statusTicket = ticket.getStatus().getDescription();
-////        if (statusTicket.equals(Config.STATUS_CLOSED)
-////                || statusTicket.equals(Config.STATUS_CANCELLED)) {
-////            throw new Exception("TICKET_CAN'T_CHANGE_STATUS");
-////        }
-////    }
+
+    public void checkStatusOfTicketToChangeStatus(int ticket_id) throws NotFoundException, Exception {
+        Tickets ticket = getTicketById(ticket_id);
+        String statusTicket = ticket.getStatus();
+        if (statusTicket.equals(Config.STATUS_CLOSED)
+                || statusTicket.equals(Config.STATUS_CANCELLED)) {
+            throw new Exception("TICKET_CAN'T_CHANGE_STATUS");
+        }
+    }
 
     /**
      * Kiểm tra quyền của user .

@@ -49,6 +49,7 @@ public class Config {
     public static final short STATUS_READ = 1 ; 
     
     public static final String PMS_PUT_REQUEST_TEAM = "pms_put_request_team";
+    public static final String PMS_ALL  = "pms_all";
 
     public static void main(String[] args) {
            System.out.println("Working Directory = " +

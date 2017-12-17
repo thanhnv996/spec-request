@@ -258,4 +258,147 @@ public class TicketRest {
             return z11.rs.auth.AuthUtil.makeTextResponse(Response.Status.EXPECTATION_FAILED, "Error");
         }
     }
+
+    @PUT
+    @Path("changestatus")
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})
+    public Response changeStatusTicket(
+            @FormParam("ticket_id") @NotNull int ticket_id,
+            @FormParam("status") String statusdesc,
+            @Context HttpServletRequest request) {
+        try {
+
+            Integer userId = sessionManager.getSessionUserId(request);
+            Employees employee = commonBusiness.getUserById(userId);
+
+            commonBusiness.checkStatusOfTicketToChangeStatus(ticket_id);
+            Tickets ticket = commonBusiness.getTicketById(ticket_id);
+
+            boolean changed = false;
+            /**
+             * Thay doi trang thai voi nguoi co toan quyen cong ty
+             */
+            if (commonBusiness.checkPermissionBoolean(employee, Config.PMS_ALL)) {
+                System.out.println("toàn quyền");
+                if (ticket.getStatus().equals(Config.STATUS_NEW)
+                        && (statusdesc.equals(Config.STATUS_INPROGRESS)
+                        || statusdesc.equals(Config.STATUS_CANCELLED))) {
+                    ticket.setStatus(statusdesc);
+                    changed = true;
+                }
+                if (ticket.getStatus().equals(Config.STATUS_INPROGRESS)
+                        && (statusdesc.equals(Config.STATUS_RESOLVED)
+                        || statusdesc.equals(Config.STATUS_CANCELLED))) {
+                    ticket.setStatus(statusdesc);
+                    changed = true;
+                }
+                if (ticket.getStatus().equals(Config.STATUS_RESOLVED)
+                        && (statusdesc.equals(Config.STATUS_FEEDBACK)
+                        || statusdesc.equals(Config.STATUS_CLOSED)
+                        || statusdesc.equals(Config.STATUS_CANCELLED))) {
+                    ticket.setStatus(statusdesc);
+                    changed = true;
+                }
+                if (ticket.getStatus().equals(Config.STATUS_FEEDBACK)
+                        && (statusdesc.equals(Config.STATUS_INPROGRESS)
+                        || statusdesc.equals(Config.STATUS_CLOSED)
+                        || statusdesc.equals(Config.STATUS_CANCELLED))) {
+                    ticket.setStatus(statusdesc);
+                    changed = true;
+                }
+            } /**
+             * Thay doi trang thai voi nguoi co quyen team
+             */
+            else if (commonBusiness.checkPermissionBoolean(employee, Config.PMS_PUT_REQUEST_TEAM)
+                    && commonBusiness.checkTicketInTeamBoolean(employee, ticket_id)) {
+                System.out.println("quyền team");
+                if (ticket.getStatus().equals(Config.STATUS_NEW)
+                        && statusdesc.equals(Config.STATUS_INPROGRESS)) {
+                    ticket.setStatus(statusdesc);
+                    changed = true;
+                }
+                if (ticket.getStatus().equals(Config.STATUS_INPROGRESS)
+                        && statusdesc.equals(Config.STATUS_RESOLVED)) {
+                    ticket.setStatus(statusdesc);
+                    changed = true;
+                }
+                if (ticket.getStatus().equals(Config.STATUS_RESOLVED)
+                        && statusdesc.equals(Config.STATUS_FEEDBACK)) {
+                    ticket.setStatus(statusdesc);
+                    changed = true;
+                }
+                if (ticket.getStatus().equals(Config.STATUS_FEEDBACK)
+                        && statusdesc.equals(Config.STATUS_INPROGRESS)) {
+                    ticket.setStatus(statusdesc);
+                    changed = true;
+                }
+            } /**
+             * Thay doi trang thai voi nguoi duoc assign
+             */
+            else if (employee.equals(ticket.getAssignedTo())) {
+                System.out.println("được assgin");
+                if (ticket.getStatus().equals(Config.STATUS_NEW)
+                        && statusdesc.equals(Config.STATUS_INPROGRESS)) {
+                    ticket.setStatus(statusdesc);
+                    changed = true;
+                }
+                if (ticket.getStatus().equals(Config.STATUS_INPROGRESS)
+                        && statusdesc.equals(Config.STATUS_RESOLVED)) {
+                    ticket.setStatus(statusdesc);
+                    changed = true;
+                }
+                if (ticket.getStatus().equals(Config.STATUS_FEEDBACK)
+                        && statusdesc.equals(Config.STATUS_INPROGRESS)) {
+                    ticket.setStatus(statusdesc);
+                    changed = true;
+                }
+                if (ticket.getStatus().equals(Config.STATUS_FEEDBACK)
+                        && statusdesc.equals(Config.STATUS_INPROGRESS)) {
+                    ticket.setStatus(statusdesc);
+                    changed = true;
+                }
+            } /**
+             * Thay doi trang thai voi nguoi tao
+             */
+            else if (employee.equals(ticket.getCreatedBy())) {
+                System.out.println("người tạo");
+                if (ticket.getStatus().equals(Config.STATUS_NEW)
+                        && statusdesc.equals(Config.STATUS_CANCELLED)) {
+                    ticket.setStatus(statusdesc);
+                    changed = true;
+                }
+                if (ticket.getStatus().equals(Config.STATUS_INPROGRESS)
+                        && statusdesc.equals(Config.STATUS_CANCELLED)) {
+                    ticket.setStatus(statusdesc);
+                    changed = true;
+                }
+                if (ticket.getStatus().equals(Config.STATUS_RESOLVED)
+                        && (statusdesc.equals(Config.STATUS_FEEDBACK)
+                        || statusdesc.equals(Config.STATUS_CLOSED)
+                        || statusdesc.equals(Config.STATUS_CANCELLED))) {
+                    ticket.setStatus(statusdesc);
+                    changed = true;
+                }
+                if (ticket.getStatus().equals(Config.STATUS_FEEDBACK)
+                        && (statusdesc.equals(Config.STATUS_CLOSED)
+                        || statusdesc.equals(Config.STATUS_CANCELLED))) {
+                    ticket.setStatus(statusdesc);
+                    changed = true;
+                }
+            } else {
+                return z11.rs.auth.AuthUtil.makeTextResponse(Response.Status.BAD_REQUEST, "METHOD_NOT_ALLOWED,NOT_PERMISSION");
+            }
+
+            if (changed) {
+                return z11.rs.auth.AuthUtil.makeTextResponse(Response.Status.ACCEPTED, "SUCCESS");
+            } else {
+                return z11.rs.auth.AuthUtil.makeTextResponse(Response.Status.BAD_REQUEST, "CHANGE_STATUS_INCORRECT");
+            }
+        } catch (RestException restException) {
+            return restException.makeHttpResponse();
+        } catch (Exception ex) {
+            return z11.rs.auth.AuthUtil.makeTextResponse(Response.Status.BAD_REQUEST, ex.getMessage());
+        }
+    }
 }
