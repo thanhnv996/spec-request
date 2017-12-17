@@ -158,6 +158,30 @@ public class CommonBusiness {
         }
     }
 
+    public boolean checkPermissionBoolean(int userId, String pms) throws NotFoundException {
+        Employees e = getUserById(userId);
+        Role role = e.getRolecode();
+
+        PartIt part = e.getPartcode();
+
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        javax.persistence.criteria.CriteriaQuery cq = cb.createQuery();
+        Root<Permission> root = cq.from(Permission.class);
+        cq.select(root);
+        cq.where(
+                cb.and(
+                        cb.equal(root.get(Permission_.partcode), part),
+                        cb.equal(root.get(Permission_.rolecode), role),
+                        cb.equal(root.get(Permission_.permission), pms)
+                )
+        );
+        List<Permission> listPermission = em.createQuery(cq).getResultList();
+        if (listPermission.isEmpty()) {
+            return false;
+        }
+        return true;
+    }
+
     /**
      * Xóa mối quan hệ người liên quan đến ticket
      *
@@ -340,4 +364,56 @@ public class CommonBusiness {
 //            return false;
 //        }
 //    }
+
+    /**
+     * Map từ mức độ ưu tiển kiểu short sang string
+     */
+    public String convertPriorityToString(short priority) throws Exception {
+        if (priority == 1) {
+            return Config.PRIORITY_1;
+        } else if (priority == 2) {
+            return Config.PRIORITY_2;
+        } else if (priority == 3) {
+            return Config.PRIORITY_3;
+        } else if (priority == 4) {
+            return Config.PRIORITY_4;
+        } else {
+            throw new Exception("NOT_EXIST_PRIORITY :" + priority);
+        }
+    }
+
+    /**
+     * Map từ mức độ ưu tiển kiểu short sang string
+     */
+    public String convertRatingToString(short rating) throws Exception {
+        if (rating == 0) {
+            return Config.RATING_0;
+        } else if (rating == 1) {
+            return Config.RATING_1;
+        } else {
+            throw new Exception("NOT_EXIST_PRIORITY :" + rating);
+        }
+    }
+
+    /**
+     * Kiểm tra rating có phải là 0 hoặc 1 không
+     */
+    public void checkRating(short rating) throws Exception {
+        if (rating == 0 || rating == 1) {
+            return;
+        } else {
+            throw new Exception("RATING MUST IS 0(GOOD) OR 1(BAD) ");
+        }
+    }
+
+    /**
+     * Kiểm tra priority có phải là 0 hoặc 1 không
+     */
+    public void checkPriority(short priority) throws Exception {
+        if (priority == 1 || priority == 2 || priority == 3 || priority == 4) {
+            return;
+        } else {
+            throw new Exception("RATING MUST 1->4 ");
+        }
+    }
 }

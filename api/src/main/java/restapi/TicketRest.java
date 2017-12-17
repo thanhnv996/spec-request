@@ -146,24 +146,42 @@ public class TicketRest {
             @FormParam("assigned_to") int assigned_to,
             @FormParam("content") String content,
             @FormParam("list_relater_id") String list_relater_id,
+            @FormParam("rating") short rating,
+            @FormParam("comment_rating") String comment_rating,
             @Context HttpServletRequest request) {
         try {
 
             Integer userId = sessionManager.getSessionUserId(request);
             Employees employee = commonBusiness.getUserById(userId);
 
+            /*
+             Kiểm tra quyền thay đổi ticket
+             */
             try {
                 commonBusiness.checkPermission(userId, Config.PMS_PUT_REQUEST_TEAM);
             } catch (Exception e) {
                 return z11.rs.auth.AuthUtil.makeTextResponse(Response.Status.BAD_REQUEST, "NOT_PERMISSION");
             }
 
+            /*
+             kiểm tra xem có ở trong team không
+             */
             try {
-                commonBusiness.checkTicketInTeam(employee, ticket_id);
+                /*
+                 nếu là toàn quyền công ty thì không cần check cái này 
+                 */
+                if (!commonBusiness.checkPermissionBoolean(userId, Config.PMS_ALL)) {
+                    commonBusiness.checkTicketInTeam(employee, ticket_id);
+                }
+
             } catch (Exception e) {
                 return z11.rs.auth.AuthUtil.makeTextResponse(Response.Status.BAD_REQUEST, "NOT_IN_TEAM");
             }
 
+            /**
+             * kiểm tra trạng thái của công việc nếu là closed hoặc cancell thì
+             * không thể thay đỏi attribute
+             */
             try {
                 commonBusiness.checkStatusOfTicket(ticket_id);
             } catch (Exception e) {
@@ -220,11 +238,16 @@ public class TicketRest {
                      * Thêm nguyên nhân vào bảng comment
                      */
                     TicketThread comment = new TicketThread();
-                    comment.setContent(reason_change_priority);
+                    String historyChangePriority = "\nThay đổi mức độ ưu tiên : "
+                            + commonBusiness.convertPriorityToString(ticket.getPriority()) + ">"
+                            + commonBusiness.convertPriorityToString(priority) + "\n";
+                    comment.setContent(historyChangePriority + reason_change_priority);
                     comment.setEmployeeId(employee);
                     comment.setTicketId(ticket);
                     em.persist(comment);
-
+                    
+                    //Kiểm tra độ ưu tiên có nằm từ 1-4 không
+                    commonBusiness.checkPriority(priority);
                     // Thay đổi mức độ ưu tiên
                     ticket.setPriority(priority);
                 }
@@ -249,13 +272,37 @@ public class TicketRest {
             if (content != null) {
                 ticket.setContent(content);
             }
+            /**
+             * đánh giá
+             */
+
+            if (comment_rating != null) {
+                commonBusiness.checkRating(rating);
+                try {
+                    ticket.setRating(rating);
+                    /**
+                     * Thêm bình luận vào bảng comment
+                     */
+                    TicketThread comment = new TicketThread();
+                    String ratingstr = "\nĐánh giá : "
+                            + commonBusiness.convertRatingToString(rating) + "\n";
+                    comment.setContent(ratingstr + comment_rating);
+                    comment.setEmployeeId(employee);
+                    comment.setTicketId(ticket);
+                    em.persist(comment);
+                } catch (Exception e) {
+
+                }
+            } else {
+                throw new Exception("REQUIRED COMMENT RATING");
+            }
 
             return z11.rs.auth.AuthUtil.makeTextResponse(Response.Status.ACCEPTED, "SUCCESS");
         } catch (RestException restException) {
             return restException.makeHttpResponse();
         } catch (Exception ex) {
             Logger.getLogger(TicketRest.class.getName()).log(Level.SEVERE, null, ex);
-            return z11.rs.auth.AuthUtil.makeTextResponse(Response.Status.EXPECTATION_FAILED, "Error");
+            return z11.rs.auth.AuthUtil.makeTextResponse(Response.Status.BAD_REQUEST, ex.getMessage());
         }
     }
 
