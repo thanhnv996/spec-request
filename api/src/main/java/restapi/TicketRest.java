@@ -10,6 +10,7 @@ import entity.Employees;
 import entity.PartIt;
 import entity.Teams;
 import entity.TicketRelaters;
+import entity.TicketThread;
 import entity.Tickets;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -30,6 +31,7 @@ import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
@@ -128,5 +130,132 @@ public class TicketRest {
             return restException.makeHttpResponse();
         }
 
+    }
+
+    @PUT
+    @Path("update")
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})
+    public Response updateTicketByForm(
+            @FormParam("ticket_id") @NotNull int ticket_id,
+            @FormParam("subject") String subject,
+            @FormParam("priority") short priority,
+            @FormParam("reason_change_priority") String reason_change_priority,
+            @FormParam("deadline") String deadline,
+            @FormParam("partcode") String partcode,
+            @FormParam("assigned_to") int assigned_to,
+            @FormParam("content") String content,
+            @FormParam("list_relater_id") String list_relater_id,
+            @Context HttpServletRequest request) {
+        try {
+
+            Integer userId = sessionManager.getSessionUserId(request);
+            Employees employee = commonBusiness.getUserById(userId);
+
+            try {
+                commonBusiness.checkPermission(userId, Config.PMS_PUT_REQUEST_TEAM);
+            } catch (Exception e) {
+                return z11.rs.auth.AuthUtil.makeTextResponse(Response.Status.BAD_REQUEST, "NOT_PERMISSION");
+            }
+
+            try {
+                commonBusiness.checkTicketInTeam(employee, ticket_id);
+            } catch (Exception e) {
+                return z11.rs.auth.AuthUtil.makeTextResponse(Response.Status.BAD_REQUEST, "NOT_IN_TEAM");
+            }
+
+            try {
+                commonBusiness.checkStatusOfTicket(ticket_id);
+            } catch (Exception e) {
+                return z11.rs.auth.AuthUtil.makeTextResponse(Response.Status.BAD_REQUEST, "CANNOT_TICKET_CLOSED/RESOLVED/CANCELLED");
+            }
+
+            Tickets ticket = commonBusiness.getTicketById(ticket_id);
+
+            Date deadlineDate;
+            try {
+                List<String> myList = new ArrayList<String>(Arrays.asList(list_relater_id.split(",")));
+                if (myList.size() > 0) {
+                    commonBusiness.removeAllRelater(ticket_id);
+                }
+                /**
+                 * Thay dổi người liên quan
+                 */
+                for (String relaterIDString : myList) {
+                    int relaterID = Integer.valueOf(relaterIDString);
+                    Employees relater = commonBusiness.getUserById(relaterID);
+                    TicketRelaters tr = new TicketRelaters();
+                    tr.setEmployeeId(relater);
+                    tr.setTicketId(ticket);
+                    em.persist(tr);
+                }
+
+                /**
+                 * thay đổi deadline
+                 */
+                DateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+                try {
+                    deadlineDate = df.parse(deadline);
+                    ticket.setDeadline(deadlineDate);
+                } catch (ParseException e) {
+                    return z11.rs.auth.AuthUtil.makeTextResponse(Response.Status.BAD_REQUEST, "DEADLINE_INVALID");
+                }
+            } catch (Exception e) {
+                System.out.println("");
+            }
+
+            if (subject != null) {
+                ticket.setSubject(subject);
+            }
+
+            /**
+             * Thay đổi mức độ ưu tiên
+             */
+            try {
+                /**
+                 * Nếu thay đổi priority bắt buộc phải có lý do
+                 */
+                if (reason_change_priority != null) {
+                    /**
+                     * Thêm nguyên nhân vào bảng comment
+                     */
+                    TicketThread comment = new TicketThread();
+                    comment.setContent(reason_change_priority);
+                    comment.setEmployeeId(employee);
+                    comment.setTicketId(ticket);
+                    em.persist(comment);
+
+                    // Thay đổi mức độ ưu tiên
+                    ticket.setPriority(priority);
+                }
+
+            } catch (NullPointerException e) {
+
+            }
+
+            /**
+             * thay đổi assignto - người được giao việc
+             */
+            try {
+                ticket.setAssignedTo(commonBusiness.getUserById(assigned_to));
+            } catch (NullPointerException e) {
+
+            }
+
+            if (partcode != null) {
+                ticket.setPartcode(commonBusiness.getPartByCode(partcode));
+            }
+
+            if (content != null) {
+                ticket.setContent(content);
+            }
+
+            return z11.rs.auth.AuthUtil.makeTextResponse(Response.Status.ACCEPTED, "SUCCESS");
+        } catch (RestException restException) {
+            return restException.makeHttpResponse();
+        } catch (Exception ex) {
+            Logger.getLogger(TicketRest.class.getName()).log(Level.SEVERE, null, ex);
+            return z11.rs.auth.AuthUtil.makeTextResponse(Response.Status.EXPECTATION_FAILED, "Error");
+        }
     }
 }

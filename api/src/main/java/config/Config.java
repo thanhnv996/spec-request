@@ -38,12 +38,6 @@ public class Config {
     
     public static final String PMS_ALL_PERMISSION = "pms_all_permissions";
     
-    
-    public static final String PMS_POST_PERMISSIONS = "pms_post_permissions";
-    public static final String PMS_DELETE_PERMISSIONS = "pms_delete_permissions";
-    public static final String PMS_GET_PERMISSIONS = "pms_get_permissions";
-    public static final String PMS_PUT_PERMISSIONS = "pms_put_permissions";
-    
     public static final String STATUS_NEW = "new";
     public static final String STATUS_CANCELLED = "cancelled";
     public static final String STATUS_INPROGRESS = "inprogress";
@@ -54,7 +48,7 @@ public class Config {
     public static final short STATUS_UNREAD = 0 ; 
     public static final short STATUS_READ = 1 ; 
     
-
+    public static final String PMS_PUT_REQUEST_TEAM = "pms_put_request_team";
 
     public static void main(String[] args) {
            System.out.println("Working Directory = " +

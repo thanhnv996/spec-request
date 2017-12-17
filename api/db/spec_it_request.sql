@@ -107,11 +107,12 @@ INSERT INTO `permission` (`id`, `permission`, `rolecode`, `partcode`) VALUES
 (9, 'pms_get_request_team', 'sublead', 'DANANG'),
 (10, 'pms_post_request_team', 'sublead', 'DANANG'),
 (11, 'pms_put_request_team', 'sublead', 'DANANG'),
-(12, 'pms_get_request_part', 'leader', 'DANANG'),
-(13, 'pms_put_request_part', 'leader', 'DANANG'),
-(14, 'pms_post_request_part', 'leader', 'DANANG'),
-(15, 'pms_close_request', 'leader', 'DANANG'),
-(16, 'pms_get_request_team', 'leader', 'DANANG');
+(12, 'pms_put_request_team', 'leader', 'DANANG'),
+(13, 'pms_get_request_part', 'leader', 'DANANG'),
+(14, 'pms_put_request_part', 'leader', 'DANANG'),
+(15, 'pms_post_request_part', 'leader', 'DANANG'),
+(16, 'pms_close_request', 'leader', 'DANANG'),
+(17, 'pms_get_request_team', 'leader', 'DANANG');
 
 -- --------------------------------------------------------
 
