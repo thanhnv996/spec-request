@@ -202,6 +202,29 @@ public class CommonBusiness {
         }
     }
 
+    /**
+     * Xóa mối quan hệ người được giao việc với ticket
+     *
+     * @param ticket_id
+     * @throws NotFoundException
+     */
+    public void removeAssignerInRelater(int assignerId, int ticket_id) throws NotFoundException {
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        javax.persistence.criteria.CriteriaQuery cq = cb.createQuery();
+        Root<TicketRelaters> root = cq.from(TicketRelaters.class);
+        cq.select(root);
+        cq.where(
+                cb.and(
+                        cb.equal(root.get(TicketRelaters_.ticketId), getTicketById(ticket_id)),
+                        cb.equal(root.get(TicketRelaters_.employeeId), getUserById(assignerId))
+                )
+        );
+        List<TicketRelaters> listTR = em.createQuery(cq).getResultList();
+        for (TicketRelaters tr : listTR) {
+            em.remove(tr);
+        }
+    }
+
     public void checkTicketInTeam(Employees emp, int ticket_id) throws NotFoundException, Exception {
         Teams teamOfEmployee = emp.getTeamId();
 

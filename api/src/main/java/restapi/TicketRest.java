@@ -142,6 +142,7 @@ public class TicketRest {
             @FormParam("priority") short priority,
             @FormParam("reason_change_priority") String reason_change_priority,
             @FormParam("deadline") String deadline,
+            @FormParam("reason_change_deadline") String reason_change_deadline,
             @FormParam("partcode") String partcode,
             @FormParam("assigned_to") int assigned_to,
             @FormParam("content") String content,
@@ -193,6 +194,9 @@ public class TicketRest {
             Date deadlineDate;
             try {
                 List<String> myList = new ArrayList<String>(Arrays.asList(list_relater_id.split(",")));
+                /**
+                 * Xóa các người liên quan cũ
+                 */
                 if (myList.size() > 0) {
                     commonBusiness.removeAllRelater(ticket_id);
                 }
@@ -209,15 +213,34 @@ public class TicketRest {
                 }
 
                 /**
-                 * thay đổi deadline
+                 * thay đổi deadline bắt buộc phải có lý do
                  */
-                DateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-                try {
-                    deadlineDate = df.parse(deadline);
-                    ticket.setDeadline(deadlineDate);
-                } catch (ParseException e) {
-                    return z11.rs.auth.AuthUtil.makeTextResponse(Response.Status.BAD_REQUEST, "DEADLINE_INVALID");
+                if (reason_change_deadline != null) {
+                    DateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+                    try {
+                        deadlineDate = df.parse(deadline);
+                        /**
+                         * Thêm nguyên nhân vào bảng comment
+                         */
+                        TicketThread comment = new TicketThread();
+                        String ratingstr = "\nThay đổi deadline : từ" + ticket.getDeadline()
+                                + " -> " + deadlineDate + "\n";
+                        comment.setContent(ratingstr + comment_rating);
+                        comment.setEmployeeId(employee);
+                        comment.setTicketId(ticket);
+                        em.persist(comment);
+
+                        // Thay đổi deadline
+                        ticket.setDeadline(deadlineDate);
+
+                    } catch (ParseException e) {
+                        return z11.rs.auth.AuthUtil.makeTextResponse(Response.Status.BAD_REQUEST, "DEADLINE_INVALID");
+                    }
+                } else {
+//                    throw new Exception("REQUIRED_REASON_CHANGE_DEADLINE");
+                    return z11.rs.auth.AuthUtil.makeTextResponse(Response.Status.BAD_REQUEST, "REQUIRED_REASON_CHANGE_DEADLINE");
                 }
+
             } catch (Exception e) {
                 System.out.println("");
             }
@@ -245,7 +268,7 @@ public class TicketRest {
                     comment.setEmployeeId(employee);
                     comment.setTicketId(ticket);
                     em.persist(comment);
-                    
+
                     //Kiểm tra độ ưu tiên có nằm từ 1-4 không
                     commonBusiness.checkPriority(priority);
                     // Thay đổi mức độ ưu tiên
@@ -260,6 +283,13 @@ public class TicketRest {
              * thay đổi assignto - người được giao việc
              */
             try {
+                // Xóa người assigned cũ
+                commonBusiness.removeAssignerInRelater(ticket.getAssignedTo().getId(), ticket.getId());
+                // thêm người assigned mới
+                TicketRelaters tr = new TicketRelaters();
+                tr.setEmployeeId(commonBusiness.getUserById(assigned_to));
+                tr.setTicketId(ticket);
+                em.persist(tr);
                 ticket.setAssignedTo(commonBusiness.getUserById(assigned_to));
             } catch (NullPointerException e) {
 
@@ -272,10 +302,10 @@ public class TicketRest {
             if (content != null) {
                 ticket.setContent(content);
             }
+
             /**
              * đánh giá
              */
-
             if (comment_rating != null) {
                 commonBusiness.checkRating(rating);
                 try {
@@ -294,7 +324,7 @@ public class TicketRest {
 
                 }
             } else {
-                throw new Exception("REQUIRED COMMENT RATING");
+                throw new Exception("REQUIRED_COMMENT_RATING");
             }
 
             return z11.rs.auth.AuthUtil.makeTextResponse(Response.Status.ACCEPTED, "SUCCESS");
