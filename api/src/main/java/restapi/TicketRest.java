@@ -652,14 +652,50 @@ public class TicketRest {
         try {
             Integer userId = sessionManager.getSessionUserId(request);
             Employees employee = commonBusiness.getUserById(userId);
-            
-            commonBusiness.markRead(ticket_id,userId,status);
+
+            commonBusiness.markRead(ticket_id, userId, status);
 
             return Response.status(Response.Status.OK).entity("OK").build();
         } catch (RestException restException) {
             return restException.makeHttpResponse();
-        } catch(Exception e){
+        } catch (Exception e) {
             return z11.rs.auth.AuthUtil.makeTextResponse(Response.Status.BAD_REQUEST, e.getMessage());
+        }
+    }
+
+    /**
+     * Get comment của một ticket nào đó
+     *
+     * @param ticket_id
+     * @param request
+     * @return
+     */
+    @GET
+    @Path("{ticket_id}/comment")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})
+    public Response getCommentTicket(
+            @PathParam("ticket_id") @NotNull short ticket_id,
+            @Context HttpServletRequest request) {
+        try {
+            Integer userId = sessionManager.getSessionUserId(request);
+            Employees employee = em.find(Employees.class, userId);
+            Tickets ticket = commonBusiness.getTicketById(ticket_id);
+
+            if (commonBusiness.checkTicketRelater(employee, ticket)||
+                    commonBusiness.checkPermissionBoolean(employee,Config.PMS_ALL)) {
+                List<TicketThread> listTicketThread = commonBusiness.getComment(ticket_id);
+
+                GenericEntity<List<TicketThread>> entity = new GenericEntity<List<TicketThread>>(listTicketThread) {
+                };
+                return Response.status(Response.Status.OK).entity(entity).build();
+            } else {
+                return z11.rs.auth.AuthUtil.makeTextResponse(Response.Status.BAD_REQUEST, "YOU NOT RELATE THIS TICKET!");
+            }
+
+        } catch (RestException restException) {
+            return restException.makeHttpResponse();
+        } catch (Exception e) {
+            return z11.rs.auth.AuthUtil.makeTextResponse(Response.Status.BAD_REQUEST, "YOU NOT RELATE THIS TICKET!!");
         }
     }
 }

@@ -16,6 +16,8 @@ import entity.Role;
 import entity.Teams;
 import entity.TicketRelaters;
 import entity.TicketRelaters_;
+import entity.TicketThread;
+import entity.TicketThread_;
 import entity.Tickets;
 import entity.Tickets_;
 import java.io.UnsupportedEncodingException;
@@ -335,22 +337,22 @@ public class CommonBusiness {
             return false;
         }
     }
-//    
-//    public List<TicketThread> getComment(int ticket_id) throws NotFoundException{
-//        Tickets ticket = getTicketById(ticket_id);
-//        
-//        CriteriaBuilder cb = em.getCriteriaBuilder();
-//        javax.persistence.criteria.CriteriaQuery cq = cb.createQuery();
-//        Root<TicketThread> root = cq.from(TicketThread.class);
-//        cq.select(root);
-//        cq.where(
-//                cb.and(
-//                        cb.equal(root.get(TicketThread_.ticketId),ticket)
-//                )
-//        );
-//        List<TicketThread> list = em.createQuery(cq).getResultList();
-//        return list;
-//    }
+    
+    public List<TicketThread> getComment(int ticket_id) throws NotFoundException{
+        Tickets ticket = getTicketById(ticket_id);
+        
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        javax.persistence.criteria.CriteriaQuery cq = cb.createQuery();
+        Root<TicketThread> root = cq.from(TicketThread.class);
+        cq.select(root);
+        cq.where(
+                cb.and(
+                        cb.equal(root.get(TicketThread_.ticketId),ticket)
+                )
+        );
+        List<TicketThread> list = em.createQuery(cq).getResultList();
+        return list;
+    }
 //    
 //    public TicketReads getTicketReadByTicketId(int ticket_id) throws NotFoundException{
 //        CriteriaBuilder cb = em.getCriteriaBuilder();
@@ -553,6 +555,13 @@ public class CommonBusiness {
         }
     }
 
+    /**
+     * Kiểm tra trạng thái của read có hợp lệ không ( phải là 0 - đã đọc hoặc 1-
+     * chưa đọc)
+     *
+     * @param status
+     * @throws Exception
+     */
     public void checkStatusRead(short status) throws Exception {
         if (status == 0 || status == 1) {
             return;
