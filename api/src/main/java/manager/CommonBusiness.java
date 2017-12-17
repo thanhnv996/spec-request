@@ -368,25 +368,25 @@ public class CommonBusiness {
 //        }
 //    }
 //    
-//    public boolean checkTicketRelater(Employees relater , Tickets ticket){
-//        CriteriaBuilder cb = em.getCriteriaBuilder();
-//        javax.persistence.criteria.CriteriaQuery cq = cb.createQuery();
-//        Root<TicketRelaters> root = cq.from(TicketRelaters.class);
-//        cq.select(root);
-//        cq.where(
-//                cb.and(
-//                        cb.equal(root.get(TicketRelaters_.employeeId),relater),
-//                        cb.equal(root.get(TicketRelaters_.ticketId),ticket)
-//                )
-//        );
-//        List<TicketReads> list = em.createQuery(cq).getResultList();
-//        if(list.size()>0){
-//            return true;
-//        }
-//        else{
-//            return false;
-//        }
-//    }
+    public boolean checkTicketRelater(Employees relater , Tickets ticket){
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        javax.persistence.criteria.CriteriaQuery cq = cb.createQuery();
+        Root<TicketRelaters> root = cq.from(TicketRelaters.class);
+        cq.select(root);
+        cq.where(
+                cb.and(
+                        cb.equal(root.get(TicketRelaters_.employeeId),relater),
+                        cb.equal(root.get(TicketRelaters_.ticketId),ticket)
+                )
+        );
+        List<TicketRelaters> list = em.createQuery(cq).getResultList();
+        if(list.size()>0){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
 
     /**
      * Map từ mức độ ưu tiển kiểu short sang string

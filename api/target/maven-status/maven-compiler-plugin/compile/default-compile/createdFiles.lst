@@ -1,6 +1,7 @@
 restadmin\TicketThreadFacadeREST.class
 manager\CommonBusiness.class
 restadmin\EmployeesFacadeREST.class
+restapi\CommentRest.class
 config\ApplicationConfig.class
 entity\PartIt_.class
 entity\TicketAttributes.class
