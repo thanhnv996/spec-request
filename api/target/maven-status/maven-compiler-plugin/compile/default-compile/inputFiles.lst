@@ -1,4 +1,5 @@
 C:\Users\thanh\Documents\spec-request\api\src\main\java\restadmin\TicketsFacadeREST.java
+C:\Users\thanh\Documents\spec-request\api\src\main\java\restapi\MeRest.java
 C:\Users\thanh\Documents\spec-request\api\src\main\java\entity\Role.java
 C:\Users\thanh\Documents\spec-request\api\src\main\java\restadmin\EmployeesFacadeREST.java
 C:\Users\thanh\Documents\spec-request\api\src\main\java\manager\CommonBusiness.java
@@ -12,6 +13,7 @@ C:\Users\thanh\Documents\spec-request\api\src\main\java\entity\Teams.java
 C:\Users\thanh\Documents\spec-request\api\src\main\java\restapi\CommentRest.java
 C:\Users\thanh\Documents\spec-request\api\src\main\java\restadmin\TicketThreadFacadeREST.java
 C:\Users\thanh\Documents\spec-request\api\src\main\java\entity\Tickets.java
+C:\Users\thanh\Documents\spec-request\api\src\main\java\entity\Reader.java
 C:\Users\thanh\Documents\spec-request\api\src\main\java\entity\TicketAttributes.java
 C:\Users\thanh\Documents\spec-request\api\src\main\java\entity\TicketThread.java
 C:\Users\thanh\Documents\spec-request\api\src\main\java\dataobject\PermissionInfo.java
