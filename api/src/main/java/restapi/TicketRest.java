@@ -761,7 +761,6 @@ public class TicketRest {
     @Path("me/read")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})
     public Response getTicketMeRead(
-            @FormParam("ticket_id") @NotNull int ticket_id,
             @Context HttpServletRequest request) throws Exception {
         try {
             Integer userId = sessionManager.getSessionUserId(request);
