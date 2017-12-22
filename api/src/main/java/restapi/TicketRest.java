@@ -8,6 +8,7 @@ package restapi;
 import config.Config;
 import entity.Employees;
 import entity.PartIt;
+import entity.Reader;
 import entity.Teams;
 import entity.TicketRelaters;
 import entity.TicketThread;
@@ -127,7 +128,7 @@ public class TicketRest {
                     return z11.rs.auth.AuthUtil.makeTextResponse(Response.Status.BAD_REQUEST, "INVALID LIST RELATER ID");
                 }
             } finally {
-                return z11.rs.auth.AuthUtil.makeTextResponse(Response.Status.ACCEPTED, "SUCCESS");
+                return z11.rs.auth.AuthUtil.makeTextResponse(Response.Status.OK, "SUCCESS");
             }
         } catch (RestException restException) {
             return restException.makeHttpResponse();
@@ -136,66 +137,64 @@ public class TicketRest {
     }
 
     @PUT
-    @Path("update")
+    @Path("update/sub-attribute")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})
-    public Response updateTicketByForm(
+    public Response updateSubAttribute(
             @FormParam("ticket_id") @NotNull int ticket_id,
-            @FormParam("subject") String subject,
-            @FormParam("priority") short priority,
-            @FormParam("reason_change_priority") String reason_change_priority,
-            @FormParam("deadline") String deadline,
-            @FormParam("reason_change_deadline") String reason_change_deadline,
-            @FormParam("partcode") String partcode,
-            @FormParam("assigned_to") int assigned_to,
+            @FormParam("subject") String subject,      
+            @FormParam("partcode") String partcode,    
             @FormParam("content") String content,
-            @FormParam("list_relater_id") String list_relater_id,
-            @FormParam("rating") short rating,
-            @FormParam("comment_rating") String comment_rating,
             @Context HttpServletRequest request) {
         try {
 
             Integer userId = sessionManager.getSessionUserId(request);
+            commonBusiness.checkAllConditionToUpdate(userId,ticket_id);
             Employees employee = commonBusiness.getUserById(userId);
-
-            /*
-             Kiểm tra quyền thay đổi ticket
-             */
-            try {
-                commonBusiness.checkPermission(userId, Config.PMS_PUT_REQUEST_TEAM);
-            } catch (Exception e) {
-                return z11.rs.auth.AuthUtil.makeTextResponse(Response.Status.BAD_REQUEST, "NOT_PERMISSION");
-            }
-
-            /*
-             kiểm tra xem có ở trong team không
-             */
-            try {
-                /*
-                 nếu là toàn quyền công ty thì không cần check cái này 
-                 */
-                if (!commonBusiness.checkPermissionBoolean(userId, Config.PMS_ALL)) {
-                    commonBusiness.checkTicketInTeam(employee, ticket_id);
-                }
-
-            } catch (Exception e) {
-                return z11.rs.auth.AuthUtil.makeTextResponse(Response.Status.BAD_REQUEST, "NOT_IN_TEAM");
-            }
-
-            /**
-             * kiểm tra trạng thái của công việc nếu là closed hoặc cancell thì
-             * không thể thay đỏi attribute
-             */
-            try {
-                commonBusiness.checkStatusOfTicket(ticket_id);
-            } catch (Exception e) {
-                return z11.rs.auth.AuthUtil.makeTextResponse(Response.Status.BAD_REQUEST, "CANNOT_TICKET_CLOSED/RESOLVED/CANCELLED");
-            }
-
             Tickets ticket = commonBusiness.getTicketById(ticket_id);
 
-            Date deadlineDate;
-            try {
+            if (subject != null) {
+                ticket.setSubject(subject);
+            }
+            
+
+            if (partcode != null) {
+                if (partcode.contains("hanoi") || partcode.contains("danang")) {
+                    ticket.setPartcode(commonBusiness.getPartByCode(partcode));
+                } else {
+                    return z11.rs.auth.AuthUtil.makeTextResponse(Response.Status.BAD_REQUEST, "code bộ phận IT không hợp lệ");
+                }
+            }
+
+            if (content != null) {
+                ticket.setContent(content);
+            }
+
+
+            return z11.rs.auth.AuthUtil.makeTextResponse(Response.Status.ACCEPTED, "SUCCESS");
+        } catch (RestException restException) {
+            return restException.makeHttpResponse();
+        } catch (Exception ex) {
+            Logger.getLogger(TicketRest.class.getName()).log(Level.SEVERE, null, ex);
+            return z11.rs.auth.AuthUtil.makeTextResponse(Response.Status.BAD_REQUEST, ex.getMessage());
+        }
+    }
+
+    @PUT
+    @Path("update/relater")
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})
+    public Response updateRelater(
+            @FormParam("ticket_id") @NotNull int ticket_id,
+            @FormParam("list_relater_id") String list_relater_id,
+            @Context HttpServletRequest request) {
+        try {
+            Integer userId = sessionManager.getSessionUserId(request);
+            commonBusiness.checkAllConditionToUpdate(userId,ticket_id);
+            
+            Employees employee = commonBusiness.getUserById(userId);
+            Tickets ticket = commonBusiness.getTicketById(ticket_id);
+          if (list_relater_id != null) {
                 List<String> myList = new ArrayList<String>(Arrays.asList(list_relater_id.split(",")));
                 /**
                  * Xóa các người liên quan cũ
@@ -215,122 +214,11 @@ public class TicketRest {
                     em.persist(tr);
                 }
 
-                /**
-                 * thay đổi deadline bắt buộc phải có lý do
-                 */
-                if (reason_change_deadline != null) {
-                    DateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-                    try {
-                        deadlineDate = df.parse(deadline);
-                        /**
-                         * Thêm nguyên nhân vào bảng comment
-                         */
-                        TicketThread comment = new TicketThread();
-                        String ratingstr = "\nThay đổi deadline : từ" + df.format(ticket.getDeadline())
-                                + " -> " + df.format(deadlineDate) + "\n";
-                        comment.setContent(ratingstr + comment_rating);
-                        comment.setEmployeeId(employee);
-                        comment.setTicketId(ticket);
-                        em.persist(comment);
-
-                        // Thay đổi deadline
-                        ticket.setDeadline(deadlineDate);
-
-                    } catch (ParseException e) {
-                        return z11.rs.auth.AuthUtil.makeTextResponse(Response.Status.BAD_REQUEST, "DEADLINE_INVALID");
-                    }
-                } else {
-//                    throw new Exception("REQUIRED_REASON_CHANGE_DEADLINE");
-                    return z11.rs.auth.AuthUtil.makeTextResponse(Response.Status.BAD_REQUEST, "REQUIRED_REASON_CHANGE_DEADLINE");
-                }
-
-            } catch (Exception e) {
-                System.out.println("");
-            }
-
-            if (subject != null) {
-                ticket.setSubject(subject);
-            }
-
-            /**
-             * Thay đổi mức độ ưu tiên
-             */
-            try {
-                /**
-                 * Nếu thay đổi priority bắt buộc phải có lý do
-                 */
-                if (reason_change_priority != null) {
-                    /**
-                     * Thêm nguyên nhân vào bảng comment
-                     */
-                    TicketThread comment = new TicketThread();
-                    String historyChangePriority = "\nThay đổi mức độ ưu tiên : "
-                            + commonBusiness.convertPriorityToString(ticket.getPriority()) + ">"
-                            + commonBusiness.convertPriorityToString(priority) + "\n";
-                    comment.setContent(historyChangePriority + reason_change_priority);
-                    comment.setEmployeeId(employee);
-                    comment.setTicketId(ticket);
-                    em.persist(comment);
-
-                    //Kiểm tra độ ưu tiên có nằm từ 1-4 không
-                    commonBusiness.checkPriority(priority);
-                    // Thay đổi mức độ ưu tiên
-                    ticket.setPriority(priority);
-                }
-
-            } catch (NullPointerException e) {
-
-            }
-
-            /**
-             * thay đổi assignto - người được giao việc
-             */
-            try {
-                // Xóa người assigned cũ
-                commonBusiness.removeAssignerInRelater(ticket.getAssignedTo().getId(), ticket.getId());
-                // thêm người assigned mới
-                TicketRelaters tr = new TicketRelaters();
-                tr.setEmployeeId(commonBusiness.getUserById(assigned_to));
-                tr.setTicketId(ticket);
-                em.persist(tr);
-                ticket.setAssignedTo(commonBusiness.getUserById(assigned_to));
-            } catch (NullPointerException e) {
-
-            }
-
-            if (partcode != null) {
-                ticket.setPartcode(commonBusiness.getPartByCode(partcode));
-            }
-
-            if (content != null) {
-                ticket.setContent(content);
-            }
-
-            /**
-             * đánh giá
-             */
-            if (comment_rating != null) {
-                commonBusiness.checkRating(rating);
-                try {
-                    ticket.setRating(rating);
-                    /**
-                     * Thêm bình luận vào bảng comment
-                     */
-                    TicketThread comment = new TicketThread();
-                    String ratingstr = "\nĐánh giá : "
-                            + commonBusiness.convertRatingToString(rating) + "\n";
-                    comment.setContent(ratingstr + comment_rating);
-                    comment.setEmployeeId(employee);
-                    comment.setTicketId(ticket);
-                    em.persist(comment);
-                } catch (Exception e) {
-
-                }
             } else {
-                throw new Exception("REQUIRED_COMMENT_RATING");
+                // System.out.println("không thực hiện thay đổi người liên quan");
+               return z11.rs.auth.AuthUtil.makeTextResponse(Response.Status.BAD_REQUEST, "không thực hiện thay đổi người liên quan");
             }
-
-            return z11.rs.auth.AuthUtil.makeTextResponse(Response.Status.ACCEPTED, "SUCCESS");
+            return z11.rs.auth.AuthUtil.makeTextResponse(Response.Status.OK, "SUCCESS");
         } catch (RestException restException) {
             return restException.makeHttpResponse();
         } catch (Exception ex) {
@@ -340,7 +228,207 @@ public class TicketRest {
     }
 
     @PUT
-    @Path("changestatus")
+    @Path("update/assignto")
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})
+    public Response updateAssignto(
+            @FormParam("ticket_id") @NotNull int ticket_id,
+            @FormParam("assigned_to") int assigned_to,
+            @Context HttpServletRequest request) {
+        try {
+            Integer userId = sessionManager.getSessionUserId(request);
+            commonBusiness.checkAllConditionToUpdate(userId,ticket_id);
+            
+            Employees employee = commonBusiness.getUserById(userId);
+            Tickets ticket = commonBusiness.getTicketById(ticket_id);
+           /**
+             * thay đổi assignto - người được giao việc
+             */
+            // Xóa người assigned cũ
+            if (assigned_to > 0) {
+                commonBusiness.removeAssignerInRelater(ticket.getAssignedTo().getId(), ticket.getId());
+                // thêm người assigned mới
+                TicketRelaters tr = new TicketRelaters();
+                tr.setEmployeeId(commonBusiness.getUserById(assigned_to));
+                tr.setTicketId(ticket);
+                em.persist(tr);
+                ticket.setAssignedTo(commonBusiness.getUserById(assigned_to));
+            } else if (assigned_to == 0) {
+                System.out.println("Không thực hiện thay đổi assign");
+            } else {
+                return z11.rs.auth.AuthUtil.makeTextResponse(Response.Status.BAD_REQUEST, "ID assign không hợp lệ");
+            }
+            return z11.rs.auth.AuthUtil.makeTextResponse(Response.Status.OK, "SUCCESS");
+        } catch (RestException restException) {
+            return restException.makeHttpResponse();
+        } catch (Exception ex) {
+            Logger.getLogger(TicketRest.class.getName()).log(Level.SEVERE, null, ex);
+            return z11.rs.auth.AuthUtil.makeTextResponse(Response.Status.BAD_REQUEST, ex.getMessage());
+        }
+    }
+
+    @PUT
+    @Path("update/priority")
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})
+    public Response updatePriority(
+            @FormParam("ticket_id") @NotNull int ticket_id,
+             @FormParam("priority") short priority,
+            @FormParam("reason_change_priority") String reason_change_priority,
+            @Context HttpServletRequest request) {
+        try {
+            Integer userId = sessionManager.getSessionUserId(request);
+            commonBusiness.checkAllConditionToUpdate(userId,ticket_id);
+            
+            Employees employee = commonBusiness.getUserById(userId);
+            Tickets ticket = commonBusiness.getTicketById(ticket_id);
+           /**
+             * Thay đổi mức độ ưu tiên bắt buộc phải có lý do
+             */
+            if (reason_change_priority != null && priority > 0) {
+                /**
+                 * Thêm nguyên nhân vào bảng comment
+                 */
+                TicketThread reason = new TicketThread();
+                String historyChangePriority = "\nThay đổi mức độ ưu tiên : "
+                        + commonBusiness.convertPriorityToString(ticket.getPriority()) + ">"
+                        + commonBusiness.convertPriorityToString(priority) + "\n";
+                reason.setContent(historyChangePriority + reason_change_priority);
+                reason.setEmployeeId(employee);
+                reason.setTicketId(ticket);
+                reason.setCreatedAt(new Date());
+                em.persist(reason);
+
+                //Kiểm tra độ ưu tiên có nằm từ 1-4 không
+                commonBusiness.checkPriority(priority);
+                // Thay đổi mức độ ưu tiên
+                ticket.setPriority(priority);
+            } else if (reason_change_priority == null && priority > 0) {
+                return z11.rs.auth.AuthUtil.makeTextResponse(Response.Status.BAD_REQUEST, "REQUIRED_REASON_CHANGE_PRIORITY");
+            } else {
+                // System.out.println("Không thực hiện thay đổi mức độ ưu tiên");
+                return z11.rs.auth.AuthUtil.makeTextResponse(Response.Status.BAD_REQUEST, "Không thực hiện thay đổi mức độ ưu tiên");
+            }
+            return z11.rs.auth.AuthUtil.makeTextResponse(Response.Status.OK, "SUCCESS");
+        } catch (RestException restException) {
+            return restException.makeHttpResponse();
+        } catch (Exception ex) {
+            Logger.getLogger(TicketRest.class.getName()).log(Level.SEVERE, null, ex);
+            return z11.rs.auth.AuthUtil.makeTextResponse(Response.Status.BAD_REQUEST, ex.getMessage());
+        }
+    }
+
+    @PUT
+    @Path("update/deadline")
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})
+    public Response updateDeadline(
+            @FormParam("ticket_id") @NotNull int ticket_id,
+            @FormParam("deadline") String deadline,
+            @FormParam("reason_change_deadline") String reason_change_deadline,
+            @Context HttpServletRequest request) {
+        try {
+            Integer userId = sessionManager.getSessionUserId(request);
+            commonBusiness.checkAllConditionToUpdate(userId,ticket_id);
+            
+            Employees employee = commonBusiness.getUserById(userId);
+            Tickets ticket = commonBusiness.getTicketById(ticket_id);
+           /**
+             * thay đổi deadline bắt buộc phải có lý do
+             */
+            Date deadlineDate;
+            if (reason_change_deadline != null && deadline != null) {
+                DateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+                try {
+                    deadlineDate = df.parse(deadline);
+                    /**
+                     * Thêm nguyên nhân vào bảng comment
+                     */
+                    TicketThread comment = new TicketThread();
+                    String ratingstr = "\nThay đổi deadline : từ" + df.format(ticket.getDeadline())
+                            + " -> " + df.format(deadlineDate) + "\n";
+                    comment.setContent(ratingstr + reason_change_deadline);
+                    comment.setEmployeeId(employee);
+                    comment.setTicketId(ticket);
+                    comment.setCreatedAt(new Date());
+                    em.persist(comment);
+
+                    // Thay đổi deadline
+                    ticket.setDeadline(deadlineDate);
+
+                } catch (ParseException e) {
+                    return z11.rs.auth.AuthUtil.makeTextResponse(Response.Status.BAD_REQUEST, "DEADLINE_INVALID");
+                }
+            } else if (reason_change_deadline == null && deadline != null) {
+//                    throw new Exception("REQUIRED_REASON_CHANGE_DEADLINE");
+                return z11.rs.auth.AuthUtil.makeTextResponse(Response.Status.BAD_REQUEST, "REQUIRED_REASON_CHANGE_DEADLINE");
+            } else {
+                // System.out.println("không thực hiện thay đổi deadline");
+                return z11.rs.auth.AuthUtil.makeTextResponse(Response.Status.BAD_REQUEST, "không thực hiện thay đổi deadline");
+            }
+            return z11.rs.auth.AuthUtil.makeTextResponse(Response.Status.OK, "SUCCESS");
+        } catch (RestException restException) {
+            return restException.makeHttpResponse();
+        } catch (Exception ex) {
+            Logger.getLogger(TicketRest.class.getName()).log(Level.SEVERE, null, ex);
+            return z11.rs.auth.AuthUtil.makeTextResponse(Response.Status.BAD_REQUEST, ex.getMessage());
+        }
+    }
+
+    @PUT
+    @Path("update/rating")
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})
+    public Response updateRating(
+            @FormParam("ticket_id") @NotNull int ticket_id,
+            @FormParam("rating") short rating,
+            @FormParam("comment_rating") String comment_rating,
+            @Context HttpServletRequest request) {
+        try {
+            Integer userId = sessionManager.getSessionUserId(request);
+            commonBusiness.checkAllConditionToUpdate(userId,ticket_id);
+            
+            Employees employee = commonBusiness.getUserById(userId);
+            Tickets ticket = commonBusiness.getTicketById(ticket_id);
+            /**
+             * đánh giá
+             */
+            if (comment_rating != null && (rating == 1 || rating == 0)) {
+                commonBusiness.checkRating(rating);
+                try {
+                    ticket.setRating(rating);
+                    /**
+                     * Thêm bình luận vào bảng comment
+                     */
+                    TicketThread rating_comment = new TicketThread();
+                    String ratingstr = "\nĐánh giá : "
+                            + commonBusiness.convertRatingToString(rating) + "\n";
+                    rating_comment.setContent(ratingstr + comment_rating);
+                    rating_comment.setEmployeeId(employee);
+                    rating_comment.setTicketId(ticket);
+                    rating_comment.setCreatedAt(new Date());
+                    em.persist(rating_comment);
+                } catch (Exception e) {
+                    // System.out.println(e.getMessage());
+                     return z11.rs.auth.AuthUtil.makeTextResponse(Response.Status.BAD_REQUEST, "e.getMessage()");
+                }
+            } else if (comment_rating != null) {
+                return z11.rs.auth.AuthUtil.makeTextResponse(Response.Status.BAD_REQUEST, "REQUIRED_COMMENT_RATING");
+            } else {
+                // System.out.println("Không thực hiện đánh giá");
+                return z11.rs.auth.AuthUtil.makeTextResponse(Response.Status.BAD_REQUEST, "Không thực hiện đánh giá");
+            }
+            return z11.rs.auth.AuthUtil.makeTextResponse(Response.Status.OK, "SUCCESS");
+        } catch (RestException restException) {
+            return restException.makeHttpResponse();
+        } catch (Exception ex) {
+            Logger.getLogger(TicketRest.class.getName()).log(Level.SEVERE, null, ex);
+            return z11.rs.auth.AuthUtil.makeTextResponse(Response.Status.BAD_REQUEST, ex.getMessage());
+        }
+    }
+
+    @PUT
+    @Path("update/status")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})
     public Response changeStatusTicket(
@@ -662,7 +750,33 @@ public class TicketRest {
             return z11.rs.auth.AuthUtil.makeTextResponse(Response.Status.BAD_REQUEST, e.getMessage());
         }
     }
+    
+    /**
+     * Danh sách các ticket đã đọc
+     *
+     * @param request
+     * @return
+     */
+    @GET
+    @Path("me/read")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})
+    public Response getTicketMeRead(
+            @FormParam("ticket_id") @NotNull int ticket_id,
+            @Context HttpServletRequest request) throws Exception {
+        try {
+            Integer userId = sessionManager.getSessionUserId(request);
+            Employees employee = commonBusiness.getUserById(userId);
 
+            GenericEntity<List<Reader>> entity = commonBusiness.getReaderByEmployeeId(userId);
+
+            return Response.status(Response.Status.OK).entity(entity).build();
+        } catch (RestException restException) {
+            return restException.makeHttpResponse();
+        } catch (Exception e) {
+            return z11.rs.auth.AuthUtil.makeTextResponse(Response.Status.BAD_REQUEST, e.getMessage());
+        }
+    }
+    
     /**
      * Get comment của một ticket nào đó
      *
@@ -672,7 +786,7 @@ public class TicketRest {
      */
     @GET
     @Path("{ticket_id}/comment")
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})
+    @Produces({MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})
     public Response getCommentTicket(
             @PathParam("ticket_id") @NotNull short ticket_id,
             @Context HttpServletRequest request) {
@@ -681,16 +795,73 @@ public class TicketRest {
             Employees employee = em.find(Employees.class, userId);
             Tickets ticket = commonBusiness.getTicketById(ticket_id);
 
-            if (commonBusiness.checkTicketRelater(employee, ticket)||
-                    commonBusiness.checkPermissionBoolean(employee,Config.PMS_ALL)) {
+            if (commonBusiness.checkTicketRelater(employee, ticket)
+                    || commonBusiness.checkPermissionBoolean(employee, Config.PMS_ALL)) {
                 List<TicketThread> listTicketThread = commonBusiness.getComment(ticket_id);
-
+                for (int i = 0; i < listTicketThread.size(); i++) {
+                    listTicketThread.get(i).setCreatedAt(listTicketThread.get(i).getCreatedAt());
+                    System.out.println(listTicketThread.get(i).toString());
+                }
                 GenericEntity<List<TicketThread>> entity = new GenericEntity<List<TicketThread>>(listTicketThread) {
                 };
                 return Response.status(Response.Status.OK).entity(entity).build();
             } else {
                 return z11.rs.auth.AuthUtil.makeTextResponse(Response.Status.BAD_REQUEST, "YOU NOT RELATE THIS TICKET!");
             }
+
+        } catch (RestException restException) {
+            return restException.makeHttpResponse();
+        } catch (Exception e) {
+            return z11.rs.auth.AuthUtil.makeTextResponse(Response.Status.BAD_REQUEST, "YOU NOT RELATE THIS TICKET!!");
+        }
+    }
+
+    /**
+     * Get một ticket nào đó
+     *
+     * @param ticket_id
+     * @param request
+     * @return
+     */
+    @GET
+    @Path("id/{ticket_id}")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})
+    public Response getTicket(
+            @PathParam("ticket_id") @NotNull short ticket_id,
+            @Context HttpServletRequest request) {
+        try {
+            Integer userId = sessionManager.getSessionUserId(request);
+            Employees employee = em.find(Employees.class, userId);
+            Tickets ticket = commonBusiness.getTicketById(ticket_id);
+
+            return Response.status(Response.Status.OK).entity(ticket).build();
+
+        } catch (RestException restException) {
+            return restException.makeHttpResponse();
+        } catch (Exception e) {
+            return z11.rs.auth.AuthUtil.makeTextResponse(Response.Status.BAD_REQUEST, "YOU NOT RELATE THIS TICKET!!");
+        }
+    }
+    
+    /**
+     * Get những người liên quan tới một ticket nào đó
+     *
+     * @param ticket_id
+     * @param request
+     * @return
+     */
+    @GET
+    @Path("id/{ticket_id}/relaters")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})
+    public Response getRelaters(
+            @PathParam("ticket_id") @NotNull short ticket_id,
+            @Context HttpServletRequest request) {
+        try {
+            Integer userId = sessionManager.getSessionUserId(request);
+            Employees employee = em.find(Employees.class, userId);
+            Tickets ticket = commonBusiness.getTicketById(ticket_id);
+            GenericEntity<List<TicketRelaters>> entity = commonBusiness.getRelaterByTicketId(ticket_id);
+            return Response.status(Response.Status.OK).entity(entity).build();
 
         } catch (RestException restException) {
             return restException.makeHttpResponse();

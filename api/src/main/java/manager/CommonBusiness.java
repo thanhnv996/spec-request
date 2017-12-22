@@ -337,17 +337,17 @@ public class CommonBusiness {
             return false;
         }
     }
-    
-    public List<TicketThread> getComment(int ticket_id) throws NotFoundException{
+
+    public List<TicketThread> getComment(int ticket_id) throws NotFoundException {
         Tickets ticket = getTicketById(ticket_id);
-        
+
         CriteriaBuilder cb = em.getCriteriaBuilder();
         javax.persistence.criteria.CriteriaQuery cq = cb.createQuery();
         Root<TicketThread> root = cq.from(TicketThread.class);
         cq.select(root);
         cq.where(
                 cb.and(
-                        cb.equal(root.get(TicketThread_.ticketId),ticket)
+                        cb.equal(root.get(TicketThread_.ticketId), ticket)
                 )
         );
         List<TicketThread> list = em.createQuery(cq).getResultList();
@@ -568,6 +568,111 @@ public class CommonBusiness {
         } else {
             throw new Exception("STATUS READ MUST BE 0 OR 1");
         }
+    }
+
+    /**
+     * GET tất cả các employee
+     */
+    public GenericEntity<List<Employees>> getAllEmployee() throws NotFoundException {
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        javax.persistence.criteria.CriteriaQuery cq = cb.createQuery();
+        Root<Employees> root = cq.from(Employees.class);
+        cq.select(root);
+        List<Employees> listTicket = em.createQuery(cq).getResultList();
+
+        GenericEntity<List<Employees>> entity = new GenericEntity<List<Employees>>(listTicket) {
+        };
+        return entity;
+    }
+
+    /*
+     Kiểm tra quyền thay đổi ticket
+     */
+    public void checkPermissonUpdate(int userId) throws Exception {
+        try {
+            checkPermission(userId, Config.PMS_PUT_REQUEST_TEAM);
+        } catch (Exception e) {
+            throw new Exception("Bạn không có quyền sửa");
+        }
+    }
+
+    /*
+     kiểm tra xem có ở trong team không
+     */
+    public void checkEmployeeInTeam(int userId, int ticket_id) throws Exception {
+        Employees employee = getUserById(userId);
+        try {
+            /*
+             nếu là toàn quyền công ty thì không cần check cái này 
+             */
+            if (!checkPermissionBoolean(userId, Config.PMS_ALL)) {
+                checkTicketInTeam(employee, ticket_id);
+            }
+
+        } catch (Exception e) {
+
+        }
+    }
+
+    /**
+     * kiểm tra trạng thái của công việc nếu là closed hoặc cancell thì không
+     * thể thay đỏi attribute
+     */
+    public void checkStatusToUpdate(int ticket_id) throws Exception {
+        try {
+            checkStatusOfTicket(ticket_id);
+        } catch (Exception e) {
+            throw new Exception("Không thể thay đổi công việc đã closed/resolved/cancelled");
+        }
+    }
+
+    /**
+     * kiểm tra tất cả điều kiện để có thể update ticket
+     */
+
+    public void checkAllConditionToUpdate(int userId,  int ticket_id) throws Exception {
+        checkPermissonUpdate(userId);
+        checkEmployeeInTeam(userId,ticket_id);
+        checkStatusToUpdate(ticket_id);
+    }
+    
+    /**
+     * kiểm tra tất cả điều kiện để có thể update ticket
+     */
+    public GenericEntity<List<TicketRelaters>> getRelaterByTicketId(int ticket_id) throws Exception {
+        Tickets ticket  = getTicketById(ticket_id);
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        javax.persistence.criteria.CriteriaQuery cq = cb.createQuery();
+        Root<TicketRelaters> root = cq.from(TicketRelaters.class);
+        cq.select(root);
+        cq.where(
+                            cb.equal(root.get(TicketRelaters_.ticketId), ticket)
+
+            );
+        List<TicketRelaters> listTicket = em.createQuery(cq).getResultList();
+
+        GenericEntity<List<TicketRelaters>> entity = new GenericEntity<List<TicketRelaters>>(listTicket) {
+        };
+        return entity;
+    }
+            
+            /**
+     * Lấy ra các ticket đã đọc theo userid
+     */
+    public GenericEntity<List<Reader>> getReaderByEmployeeId(int user_id) throws Exception {
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        javax.persistence.criteria.CriteriaQuery cq = cb.createQuery();
+        Root<Reader> root = cq.from(Reader.class);
+        cq.select(root);
+        cq.where(
+                            cb.equal(root.get(Reader_.employeeId), user_id)
+
+            );
+        List<Reader> listTicket = em.createQuery(cq).getResultList();
+
+        GenericEntity<List<Reader>> entity = new GenericEntity<List<Reader>>(listTicket) {
+        };
+        return entity;
     }
 
 }

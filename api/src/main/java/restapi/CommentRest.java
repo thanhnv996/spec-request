@@ -15,8 +15,10 @@ import entity.Tickets;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import javax.ejb.EJB;
@@ -79,8 +81,9 @@ public class CommentRest {
                 comment.setContent(content);
                 comment.setEmployeeId(employee);
                 comment.setTicketId(ticket);
+                comment.setCreatedAt(new Date());
                 em.persist(comment);
-                return z11.rs.auth.AuthUtil.makeTextResponse(Response.Status.ACCEPTED, "OK");
+                return z11.rs.auth.AuthUtil.makeTextResponse(Response.Status.OK, "OK");
             } else {
                 return z11.rs.auth.AuthUtil.makeTextResponse(Response.Status.BAD_REQUEST, "NOT_PERMISSION");
             }
