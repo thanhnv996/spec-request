@@ -1,0 +1,141 @@
+
+<div class="container-fluid" id="style-scroll" style=" height: calc(111vh - 75px); margin-right: 0.3%; margin-top: -7px;">
+
+    <div class="row clearfix">
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" >
+            <div class="card"  style="margin-bottom: 0px;">
+                <div class="header bg-purple">
+                    <h2>
+                        Thêm công việc
+                    </h2>
+                    <ul class="header-dropdown m-r--5">
+                        <li class="dropdown">
+                            <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                                <i class="material-icons">more_vert</i>
+                            </a>
+                            <ul class="dropdown-menu pull-right">
+                                <li><a href="javascript:void(0);">Action</a></li>
+                                <li><a href="javascript:void(0);">Another action</a></li>
+                                <li><a href="javascript:void(0);">Something else here</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+                <div class="body"  id="style-scroll-purple" style=" height:calc(90vh); ">                           
+                    <!-- /.box-header -->
+                    <div class="box-body">
+                        <div class="row">
+                            <div class=" col-md-12">
+                                <div class="form-group form-float">
+                                    <div class="form-line ">
+                                        <input type="text" class="form-control" ng-model="subject" style="margin-bottom: 2px;">
+                                        <label class="form-label">Tên công việc<span style="color:red;">*</span></label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class=" col-md-12">
+                                <span> <b>Người thực hiện</b><span style="color:red;">*</span> </span>
+                                <select ng-model="assigned_to"  class="form-control show-tick"  data-live-search="true" >
+                                    <option ng-repeat="o in users" ng-selected="{{o == myselect}}" value="{{o.id}}">
+                                        {{o.name}}
+                                    </option>
+                                </select>
+                            </div>
+                            <div class=" col-md-6">
+                                <span> <b>Mức độ ưu tiên<span style="color:red;">*</span></b> </span>
+                                <select class="form-control show-tick" ng-model="priority">
+                                    <option value="1">thấp</option>
+                                    <option value="2">bình thường</option>
+                                    <option value="3">cao</option>
+                                    <option value="4">khẩn cấp</option>
+                                </select>
+                            </div>
+
+                            <div class=" col-md-6">
+                                <span> <b>Ngày hết hạn<span style="color:red;">*</span></b> </span>
+                                <div class="input-group">
+                                    <span class="input-group-addon">
+                                        <i class="material-icons">date_range</i>
+                                    </span>
+                                    <div class="form-line">
+                                        <input ng-model="deadline" type="text" class="form-control datetime" placeholder="Ex: 30/07/2016 23:59">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class=" col-md-6">
+                                <span> <b>Bộ phận IT<span style="color:red;">*</span></b> </span>
+                                <select class="form-control show-tick" style="margin-top: 5px;" ng-model ="partit">
+                                    <option value="HANOI">Hà nội - IT</option>
+                                    <option value="DANANG">Đà nẵng - IT</option>
+                                </select>
+                            </div>
+
+                            <div class=" col-md-6">
+                                <span> <b>Người liên quan</b> </span>
+                                <select ng-model="myselect"  class="form-control show-tick"  data-live-search="true" multiple >
+                                    <option ng-repeat="o in users" ng-selected="{{o == myselect}}" value="{{o.id}}">
+                                        {{o.name}}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-12"> 
+                                <label for="exampleInputEmail1">Nội dung <span style="color:red;">*</span></label>
+                                <textarea class="textarea" id="myarea" placeholder="Nội dung công việc" style="width: 100%; height: 125px; font-size: 14px; line-height: 18px; border: 1px solid #dddddd; padding: 10px;"></textarea>
+                            </div>
+                        </div>
+                        <div class="form-group" >
+                            <div class="col-md-12" style="    margin-top: -15px;"> 
+
+                                <label for="exampleInputFile">File input</label>
+                                <input type="file" id="exampleInputFile">
+                                <div class="box-footer pull-right" style="    margin-top: -40px;">
+                                    <button type="submit" class="btn btn-default pull-right"><i class="fa fa-arrows-alt"></i>Hủy bỏ</button>
+                                    <button type="submit" class="btn btn-info pull-right" ng-click="postTicket()"><i class="fa fa-arrow-circle-up"></i>Gửi yêu cầu</button>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+
+    <!-- Jquery Core Js -->
+    <script src="plugins/jquery/jquery.min.js"></script>
+
+    <!-- Bootstrap Core Js -->
+    <script src="plugins/bootstrap/js/bootstrap.js"></script>
+
+    <!-- Waves Effect Plugin Js -->
+    <script src="plugins/node-waves/waves.js"></script>
+
+    <!-- Custom Js -->
+    <script src="js/util/admin-uiview.js"></script>
+    <script src="js/pages/ui/tooltips-popovers.js"></script>
+    <!--<script src="js/pages/forms/advanced-form-elements.js"></script>-->
+    <!-- Ckeditor -->
+    <script src="plugins/ckeditor/ckeditor.js"></script>
+    <script src="js/pages/forms/editors.js"></script>
+    <!-- APPLICATIONS -->
+    <script src="plugins/bootstrap-tagsinput/bootstrap-tagsinput.js"></script>
+    <script src="plugins/multi-select/js/jquery.multi-select.js"></script>
+    <script src="plugins/bootstrap-select/js/bootstrap-select.js"></script>
+    <!-- Input Mask Plugin Js -->
+    <script src="plugins/jquery-inputmask/jquery.inputmask.bundle.js"></script>
+    <!-- Bootstrap WYSIHTML5 -->
+    <script src="plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.all.js"></script>
+    <script src="dist/js/pages/dashboard.js"></script>
+    <script>
+                                        //bootstrap WYSIHTML5 - text editor
+                                        $(".textarea").wysihtml5();
+    </script>
+</div>
+
+

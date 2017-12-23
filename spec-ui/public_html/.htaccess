@@ -1,0 +1,5 @@
+<FilesMatch "\.(ico|pdf|flv|jpg|jpeg|png|gif|html|js|css|swf)(\.gz)?$">
+  Header set Cache-Control "public"
+  Header set Expires "Thu, 15 Apr 2020 20:00:00 GMT"
+</FilesMatch>
+

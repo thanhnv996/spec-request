@@ -1,0 +1,547 @@
+﻿<!DOCTYPE html>
+<html>
+
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+        <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+        <title>Z11 Auth</title>
+        <!-- Favicon-->
+        <link rel="icon" href="favicon.ico" type="image/x-icon">
+
+        <!-- Google Fonts -->
+        <link href="https://fonts.googleapis.com/css?family=Roboto:400,700&subset=latin,cyrillic-ext" rel="stylesheet" type="text/css">
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" type="text/css">
+
+        <!-- Bootstrap Core Css -->
+        <link href="plugins/bootstrap/css/bootstrap.css" rel="stylesheet">
+
+        <!-- Waves Effect Css -->
+        <link href="plugins/node-waves/waves.css" rel="stylesheet" />
+
+        <!-- Animation Css -->
+        <link href="plugins/animate-css/animate.css" rel="stylesheet" />
+
+        <!-- Morris Chart Css-->
+        <link href="plugins/morrisjs/morris.css" rel="stylesheet" />
+
+        <!-- AdminBSB Themes. You can choose a theme from css/themes instead of get all themes -->
+        <link href="css/themes/all-themes.css" rel="stylesheet" />
+        <!-- Multi Select Css -->
+        <link href="plugins/multi-select/css/multi-select.css" rel="stylesheet">
+        <!-- Bootstrap Select Css -->
+        <link href="plugins/bootstrap-select/css/bootstrap-select.css" rel="stylesheet" />
+        <!-- Bootstrap Tagsinput Css -->
+        <link href="plugins/bootstrap-tagsinput/bootstrap-tagsinput.css" rel="stylesheet">
+        <!-- Colorpicker Css -->
+        <link href="plugins/bootstrap-colorpicker/css/bootstrap-colorpicker.css" rel="stylesheet" />
+        <!-- bootstrap wysihtml5 - text editor -->
+        <link rel="stylesheet" href="plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css">
+
+        <!-- Bootstrap Material Datetime Picker Css -->
+        <link href="plugins/bootstrap-material-datetimepicker/css/bootstrap-material-datetimepicker.css" rel="stylesheet" />
+
+        <!-- Wait Me Css -->
+        <link href="plugins/waitme/waitMe.css" rel="stylesheet" />
+
+        <!-- Bootstrap Select Css -->
+        <link href="plugins/bootstrap-select/css/bootstrap-select.css" rel="stylesheet" />
+
+        <!-- Custom Css -->
+        <link href="css/materialize.css" rel="stylesheet">
+
+        <!-- Custom Css -->
+        <link href="css/style.css" rel="stylesheet">
+
+
+        <link rel="stylesheet" href="css/bootstrap-theme.min.css">
+        <link rel="stylesheet" href="css/angular-animate-1.6.4.css">   
+        <link rel="stylesheet" href="css/angular-ui-notification.css">  
+        <link rel="stylesheet" href="css/loading-bar.css">   
+
+
+
+
+        <!--Angular controller-->
+        <script type="text/javascript" src="js/lib/jquery.min.js"></script>
+        <script type="text/javascript" src="js/lib/bootstrap.min.js"></script>
+        <script type="text/javascript" src="js/lib/angular.js"></script>
+        <script type="text/javascript" src="js/lib/angular-ui-router-1.0.3.min2.js"></script>
+        <script type="text/javascript" src="js/lib/angular-animate-1.6.4.js"></script>
+        <script type="text/javascript" src="js/lib/xeditable.js"></script>
+        <script type="text/javascript" src="js/lib/angular-ui-notification.js"></script>
+        <script type="text/javascript" src="js/lib/ui-bootstrap-tpls-2.5.0.min.js"></script>
+        <script type="text/javascript" src="js/lib/loading-bar.js"></script>
+
+
+        <script type="text/javascript" src="js/util/apiconfig.js"></script>
+        <script type="text/javascript" src="js/util/apiutil.js"></script>
+        <script type="text/javascript" src="js/util/common-function.js"></script>
+
+
+        <script type="text/javascript" src="js/web/auth-ui-app.js"></script>
+        <script type="text/javascript" src="js/web/sessionstatusCtrl.js"></script>
+        <script type="text/javascript" src="js/web/me-controller.js"></script>
+        <script type="text/javascript" src="js/web/team-controller.js"></script>
+        <script type="text/javascript" src="js/web/ticket-controller.js"></script>
+        <script type="text/javascript" src="js/web/partit-controller.js"></script>
+        <script type="text/javascript" src="js/web/login-controller.js"></script>
+        <script type="text/javascript" src="js/web/dashbroad-controller.js"></script>
+    </head>
+
+    <body class="theme-light-blue" ng-app="auth-ui-app" ng-controller="sessionstatusCtrl" style="zoom:0.9;">
+        <!-- Page Loader -->
+        <div class="page-loader-wrapper" >
+            <div class="loader">
+                <div class="preloader">
+                    <div class="spinner-layer pl-red">
+                        <div class="circle-clipper left">
+                            <div class="circle"></div>
+                        </div>
+                        <div class="circle-clipper right">
+                            <div class="circle"></div>
+                        </div>
+                    </div>
+                </div>
+                <p>Please wait...</p>
+            </div>
+        </div>
+        <!-- #END# Page Loader -->
+        <!-- Overlay For Sidebars -->
+        <div class="overlay"></div>
+        <!-- #END# Overlay For Sidebars -->
+        <!-- Search Bar -->
+        <div class="search-bar">
+            <div class="search-icon">
+                <i class="material-icons">search</i>
+            </div>
+            <input type="text" placeholder="START TYPING...">
+            <div class="close-search">
+                <i class="material-icons">close</i>
+            </div>
+        </div>
+        <!-- #END# Search Bar -->
+        <!-- Top Bar -->
+        <nav class="navbar" style="background: white;">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <a href="javascript:void(0);" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse" aria-expanded="false"></a>
+                    <a href="javascript:void(0);" class="bars"></a>
+                    <a class="navbar-brand" href="index.html">Authentication server</a>
+                    <div class="box-search">
+                        <div class="form-group form-float form-group-lg">
+                            <span class="input-group-addon">
+                                <i class="material-icons">search</i>
+                            </span>
+                            <div class="form-line error search">
+                                <input type="text" class="form-control" id="input-search" name="error" required="" list="searchAll" ng-model="keyword" ng-change="searchInputChange(keyword)">
+                                <ul class="results" >
+                                    <li ng-repeat="usersh in searchedUsers" ng-click="showUser(usersh.userid, usersh.name)">
+                                        <!--<img class="img-responsive img-circle" src="{{usersh.urlProfilePic}}" alt="Avarta">-->
+                                        <span>{{usersh.name}}</span>
+                                    </li>
+                                    <li ng-repeat="app in searchedApps" ng-click="showApp(app.appcode, app.appname)">{{app.appname}}</li>
+                                    <li ng-repeat="product in searchedProducts" ng-click="showApp(product.appcode, product.productname)">{{product.productname}}</li>
+                                </ul>
+                                <!--                                <datalist id="searchAll">
+                                    <select ng-model="selected" ng-options="user.name as user.userid for user in searchedUsers track by user.name"></select>
+                                    <select ng-model="selected" ng-options="app.appname as app.appcode for app in searchedApps track by app.appname"></select>
+                                    <select ng-model="selected" ng-options="product.productname as product.productcode for product in searchedProducts track by product.productname"></select>
+                                </datalist>-->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="collapse navbar-collapse" id="navbar-collapse">
+
+                    <ul class="nav navbar-nav navbar-right">
+                        <!--NAME-->
+                        <li>
+                            <div class="box-info">
+                                <h4>{{me.name}}</h4>
+                                <!--<img src="{{me.urlProfilePic}}" alt="Avarta">-->
+                            </div>
+                        </li>
+                        <!--BALANCE-->
+                        <li class="balance"><h4><b style='line-height: 2.8;'>Balance : <span style="color: indianred;">{{me.balance}}</span></b></h4></li>
+                        <!--<li class="pull-right"><a href="javascript:void(0);" class="js-right-sidebar" data-close="true"><i class="material-icons">more_vert</i></a></li>-->
+                        <!--LOGIN-->
+                        <li ng-show="user.id" ng-click="logout()" class="pull-right"  style="cursor:pointer; "><a><i class="glyphicon glyphicon-log-out" style="font-size: 24px; color: indianred;"></i></a></li>     
+                        <li ng-show="!user.id" class="pull-right"  data-placement="bottom" title="Log in"><a ui-sref="login"><i class="glyphicon glyphicon-log-in"></i></a></li>                       
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        <!-- #Top Bar -->
+        <section>
+            <!-- Left Sidebar -->
+            <aside id="leftsidebar" class="sidebar">
+                <!-- User Info -->
+                <div id="logo">
+                    <img class="logo-app" src="images/logo.png" width="70px"/>
+                    <span><h3>Z11</h3></span>
+                </div>
+                <!-- #User Info -->
+                <!-- Menu -->
+                <div class="menu menu-dashbroad"  id="style-scroll-black">
+                    <button style="left: 30%;" class="btn btn-success waves-effect btn-add-ticket" data-title="Add new"  ng-click="showAdd()">Thêm công việc</button>
+                    <ul class="list" >
+                        <!--<li class="header">MAIN NAVIGATION</li>-->
+                        <li class="active" id="dashbroad">
+                            <a ui-sref="dashbroad" >
+                                <i class="material-icons">dashboard</i>
+                                <span>Dashbroad</span>
+                            </a>
+                        </li>
+                        <li id="mecreated">
+                            <a ui-sref="profile"  class="menu-toggle">
+                                <i class="material-icons">work</i>
+                                <span>Công việc tôi yêu cầu</span>
+                            </a>
+                            <ul class="ml-menu">
+                                <li class="active">
+                                    <a ui-sref="me-create-all"><i class="material-icons small-icon-element">select_all</i>All</a>
+                                </li>
+                                <li>
+                                    <a ui-sref="me-create-new"><i class="material-icons small-icon-element">fiber_new</i>New</a>
+                                </li>
+                                <li>
+                                    <a ui-sref="me-create-inprogress"><i class="material-icons small-icon-element">gavel</i>Inprogress</a>
+                                </li>
+                                <li>
+                                    <a ui-sref="me-create-resolved"><i class="material-icons small-icon-element">new_releases</i>Resolved</a>
+                                </li>
+                                <li>
+                                    <a ui-sref="me-create-outofdate"><i class="material-icons small-icon-element">date_range</i>Out Of Date</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li id="merelated">
+                            <a ui-sref="profile"  class="menu-toggle">
+                                <i class="material-icons">work</i>
+                                <span>Công việc liên quan</span>
+                            </a>
+                            <ul class="ml-menu">
+                                <li class="active">
+                                    <a ui-sref="me-relate-all"><i class="material-icons small-icon-element">select_all</i>All</a>
+                                </li>
+                                <li>
+                                    <a ui-sref="me-relate-new"><i class="material-icons small-icon-element">fiber_new</i>New</a>
+                                </li>
+                                <li>
+                                    <a ui-sref="me-relate-inprogress"><i class="material-icons small-icon-element">gavel</i>Inprogress</a>
+                                </li>
+                                <li>
+                                    <a ui-sref="me-relate-resolved"><i class="material-icons small-icon-element">new_releases</i>Resolved</a>
+                                </li>
+                                <li>
+                                    <a ui-sref="me-relate-out"><i class="material-icons small-icon-element">date_range</i>Out Of Date</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li id="merequested">
+                            <a ui-sref="profile"  class="menu-toggle">
+                                <i class="material-icons">work</i>
+                                <span>Việc tôi được giao</span>
+                            </a>
+                            <ul class="ml-menu">
+                                <li class="active">
+                                    <a ui-sref="me-requested-all"><i class="material-icons small-icon-element">select_all</i>All</a>
+                                </li>
+                                <li>
+                                    <a ui-sref="me-requested-new"><i class="material-icons small-icon-element">fiber_new</i>New</a>
+                                </li>
+                                <li>
+                                    <a ui-sref="me-requested-inprogress"><i class="material-icons small-icon-element">gavel</i>Inprogress</a>
+                                </li>
+                                <li>
+                                    <a ui-sref="me-requested-resolved"><i class="material-icons small-icon-element">new_releases</i>Resolved</a>
+                                </li>
+                                <li>
+                                    <a ui-sref="me-requested-out"><i class="material-icons small-icon-element">date_range</i>Out Of Date</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li id="teamrequested">
+                            <a ui-sref="profile"  class="menu-toggle">
+                                <i class="material-icons">group_work</i>
+                                <span>Công việc của team</span>
+                            </a>
+                            <ul class="ml-menu">
+                                <li class="active">
+                                    <a ui-sref="all-ticket-team"><i class="material-icons small-icon-element">select_all</i>All</a>
+                                </li>
+                                <li>
+                                    <a ui-sref="new-ticket-team"><i class="material-icons small-icon-element">fiber_new</i>New</a>
+                                </li>
+                                <li>
+                                    <a ui-sref="inprogress-ticket-team"><i class="material-icons small-icon-element">gavel</i>Inprogress</a>
+                                </li>
+                                <li>
+                                    <a ui-sref="resolved-ticket-team"><i class="material-icons small-icon-element">new_releases</i>Resolved</a>
+                                </li>
+                                <li>
+                                    <a ui-sref="outofdate-ticket-team"><i class="material-icons small-icon-element">date_range</i>Out Of Date</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li id="partrequested">
+                            <a ui-sref="profile"  class="menu-toggle">
+                                <i class="material-icons">business</i>
+                                <span>Công việc của bộ phận IT</span>
+                            </a>
+                            <ul class="ml-menu">
+                                <li class="active">
+                                    <a ui-sref="all-ticket-partit"><i class="material-icons small-icon-element">select_all</i>All</a>
+                                </li>
+                                <li>
+                                    <a ui-sref="new-ticket-partit"><i class="material-icons small-icon-element">fiber_new</i>New</a>
+                                </li>
+                                <li>
+                                    <a ui-sref="inprogress-ticket-partit"><i class="material-icons small-icon-element">gavel</i>Inprogress</a>
+                                </li>
+                                <li>
+                                    <a ui-sref="resolved-ticket-partit"><i class="material-icons small-icon-element">new_releases</i>Resolved</a>
+                                </li>
+                                <li>
+                                    <a ui-sref="outofdate-ticket-partit"><i class="material-icons small-icon-element">date_range</i>Out Of Date</a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+                <!-- #Menu -->
+                <!-- Footer -->
+                <!--                <div class="legal">
+                                    <div class="copyright">
+                                        &copy; 2016 - 2017 <a href="javascript:void(0);">AdminBSB - Material Design</a>.
+                                    </div>
+                                    <div class="version">
+                                        <b>Version: </b> 1.0.5
+                                    </div>
+                                </div>-->
+                <!-- #Footer -->
+            </aside>
+            <!-- #END# Left Sidebar -->
+            <!-- Right Sidebar -->
+            <aside id="rightsidebar" class="right-sidebar">
+                <ul class="nav nav-tabs tab-nav-right" role="tablist">
+                    <li role="presentation" class="active"><a data-target="#skins" data-toggle="tab" style="cursor: pointer;">SKINS</a></li>
+                    <li role="presentation"><a data-target="#settings" data-toggle="tab" style="cursor: pointer;">SETTINGS</a></li>
+                </ul>
+                <div class="tab-content" id="style-scroll" style="height: calc(100vh - -5px); overflow: auto;">
+                    <div role="tabpanel" class="tab-pane fade in active in active" id="skins">
+                        <ul class="demo-choose-skin">
+                            <li data-theme="red" class="active">
+                                <div class="red"></div>
+                                <span>Red</span>
+                            </li>
+                            <li data-theme="pink">
+                                <div class="pink"></div>
+                                <span>Pink</span>
+                            </li>
+                            <li data-theme="purple">
+                                <div class="purple"></div>
+                                <span>Purple</span>
+                            </li>
+                            <li data-theme="deep-purple">
+                                <div class="deep-purple"></div>
+                                <span>Deep Purple</span>
+                            </li>
+                            <li data-theme="indigo">
+                                <div class="indigo"></div>
+                                <span>Indigo</span>
+                            </li>
+                            <li data-theme="blue">
+                                <div class="blue"></div>
+                                <span>Blue</span>
+                            </li>
+                            <li data-theme="light-blue">
+                                <div class="light-blue"></div>
+                                <span>Light Blue</span>
+                            </li>
+                            <li data-theme="cyan">
+                                <div class="cyan"></div>
+                                <span>Cyan</span>
+                            </li>
+                            <li data-theme="teal">
+                                <div class="teal"></div>
+                                <span>Teal</span>
+                            </li>
+                            <li data-theme="green">
+                                <div class="green"></div>
+                                <span>Green</span>
+                            </li>
+                            <li data-theme="light-green">
+                                <div class="light-green"></div>
+                                <span>Light Green</span>
+                            </li>
+                            <li data-theme="lime">
+                                <div class="lime"></div>
+                                <span>Lime</span>
+                            </li>
+                            <li data-theme="yellow">
+                                <div class="yellow"></div>
+                                <span>Yellow</span>
+                            </li>
+                            <li data-theme="amber">
+                                <div class="amber"></div>
+                                <span>Amber</span>
+                            </li>
+                            <li data-theme="orange">
+                                <div class="orange"></div>
+                                <span>Orange</span>
+                            </li>
+                            <li data-theme="deep-orange">
+                                <div class="deep-orange"></div>
+                                <span>Deep Orange</span>
+                            </li>
+                            <li data-theme="brown">
+                                <div class="brown"></div>
+                                <span>Brown</span>
+                            </li>
+                            <li data-theme="grey">
+                                <div class="grey"></div>
+                                <span>Grey</span>
+                            </li>
+                            <li data-theme="blue-grey">
+                                <div class="blue-grey"></div>
+                                <span>Blue Grey</span>
+                            </li>
+                            <li data-theme="black">
+                                <div class="black"></div>
+                                <span>Black</span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div role="tabpanel" class="tab-pane fade" id="settings">
+                        <div class="demo-settings">
+                            <p>GENERAL SETTINGS</p>
+                            <ul class="setting-list">
+                                <li>
+                                    <span>Report Panel Usage</span>
+                                    <div class="switch">
+                                        <label><input type="checkbox" checked><span class="lever"></span></label>
+                                    </div>
+                                </li>
+                                <li>
+                                    <span>Email Redirect</span>
+                                    <div class="switch">
+                                        <label><input type="checkbox"><span class="lever"></span></label>
+                                    </div>
+                                </li>
+                            </ul>
+                            <p>SYSTEM SETTINGS</p>
+                            <ul class="setting-list">
+                                <li>
+                                    <span>Notifications</span>
+                                    <div class="switch">
+                                        <label><input type="checkbox" checked><span class="lever"></span></label>
+                                    </div>
+                                </li>
+                                <li>
+                                    <span>Auto Updates</span>
+                                    <div class="switch">
+                                        <label><input type="checkbox" checked><span class="lever"></span></label>
+                                    </div>
+                                </li>
+                            </ul>
+                            <p>ACCOUNT SETTINGS</p>
+                            <ul class="setting-list">
+                                <li>
+                                    <span>Offline</span>
+                                    <div class="switch">
+                                        <label><input type="checkbox"><span class="lever"></span></label>
+                                    </div>
+                                </li>
+                                <li>
+                                    <span>Location Permission</span>
+                                    <div class="switch">
+                                        <label><input type="checkbox" checked><span class="lever"></span></label>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+            <!-- #END# Right Sidebar -->
+        </section>
+
+        <section class="content" ui-view ng-animate="'view'">
+        </section>  
+
+        <!-- Jquery Core Js -->
+        <script src="plugins/jquery/jquery.min.js"></script>
+
+        <!-- Bootstrap Core Js -->
+        <script src="plugins/bootstrap/js/bootstrap.js"></script>
+
+        <!-- Select Plugin Js -->
+        <script src="plugins/bootstrap-select/js/bootstrap-select.js"></script>
+
+        <!-- Slimscroll Plugin Js -->
+        <!--<script src="plugins/jquery-slimscroll/jquery.slimscroll.js"></script>-->
+
+        <!-- Waves Effect Plugin Js -->
+        <script src="plugins/node-waves/waves.js"></script>
+
+        <!-- Jquery CountTo Plugin Js -->
+        <script src="plugins/jquery-countto/jquery.countTo.js"></script>
+
+        <!-- Morris Plugin Js -->
+        <script src="plugins/raphael/raphael.min.js"></script>
+        <script src="plugins/morrisjs/morris.js"></script>
+
+        <!-- ChartJs -->
+        <script src="plugins/chartjs/Chart.bundle.js"></script>
+
+        <!-- Flot Charts Plugin Js -->
+        <script src="plugins/flot-charts/jquery.flot.js"></script>
+        <script src="plugins/flot-charts/jquery.flot.resize.js"></script>
+        <script src="plugins/flot-charts/jquery.flot.pie.js"></script>
+        <script src="plugins/flot-charts/jquery.flot.categories.js"></script>
+        <script src="plugins/flot-charts/jquery.flot.time.js"></script>
+        <!-- Sparkline Chart Plugin Js -->
+        <script src="plugins/jquery-sparkline/jquery.sparkline.js"></script>
+        <!-- Autosize Plugin Js -->
+        <script src="plugins/autosize/autosize.js"></script>
+
+        <!-- Moment Plugin Js -->
+        <script src="plugins/momentjs/moment.js"></script>
+
+        <!-- Bootstrap Material Datetime Picker Plugin Js -->
+        <script src="plugins/bootstrap-material-datetimepicker/js/bootstrap-material-datetimepicker.js"></script>
+
+
+        <script src="js/pages/forms/basic-form-elements.js"></script>
+
+        <!-- Demo Js -->
+        <!--<script src="js/util/demo.js"></script>-->
+        <!-- Demo Js -->
+        <script src="js/util/demo2.js"></script>
+        <!-- Custom Js -->
+        <!--<script src="js/util/admin.js"></script>-->
+
+        <!-- Custom Js -->
+        <script src="js/pages/ui/tooltips-popovers.js"></script>
+        <script src="js/util/admin.js"></script>
+        <script src="js/util/demo.js"></script>
+        <!--        <script src="js/pages/index.js"></script>
+                <script src="js/util/demo.js"></script>
+                <script src="js/util/helpers.js"></script>
+                <script src="js/util/script.js"></script>-->
+        <script src="plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.all.js"></script>
+        <script>
+                                //bootstrap WYSIHTML5 - text editor
+                                $(".textarea").wysihtml5();
+        </script>        
+
+
+
+
+
+
+    </body>
+
+</html>

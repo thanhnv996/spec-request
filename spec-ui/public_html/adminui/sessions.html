@@ -1,0 +1,54 @@
+<div class="container" style="    width: 1300px;">
+    <div class="table-responsive" style="margin-bottom: 0; padding-bottom: 0;">
+        <table class="table table-striped table-bordered">      
+            <thead>
+                <tr>
+                    <td> <span><input class="form-control" ng-model="filtparams.userid"></span></td>
+                    <td> <span><input class="form-control" ng-model="filtparams.value"></span> </td>
+                    <td> <span><input class="form-control" ng-model="filtparams.clientinfo"></span></td>
+                    <td> <span><input class="form-control" ng-model="filtparams.clientip"></span> </td>
+                    <td> <span><input class="form-control" ng-model="filtparams.createdtime"></span> </td>
+                    <td> <button class="form-control" ng-click="clearFilter()" ><span class="glyphicon glyphicon-remove"></span></button> </td>
+                    <td> <button class="form-control" ng-click="loadSessionWihFilter()" ><span class="glyphicon glyphicon-search"></span></button> </td>
+                </tr>
+                <tr>                           
+                    <th style="width: 7%;"><span ng-click="sortByPropertyUser('id')">User id</span></th>
+                    <th><span ng-click="sortByPropertyUser('name')">value</span></th>
+                    <th><span ng-click="sortByPropertyUser('userid')">clientinfo</span></th>
+                    <th><span ng-click="sortByPropertyUser('email')">clientip</span></th>
+                    <th style="width: 5%;"><span ng-click="sortByPropertyUser('balance')">createdtime</span></th>
+                    <th style="width: 3%;">Delete</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="session in sessions| filter : filterText">
+                    <td> <span>{{session.userid}} </span> </td>
+                    <td> {{session.value}}     </td>                          
+                    <td> {{session.clientinfo}} </td>                                         
+                    <td> {{session.clientip}} </td>                                      
+                    <td> {{session.createdtime}} </td>
+                    <td>
+                        <button title="Delete" class="btn btn-danger btn-xs" data-title="Delete" ng-click="deleteSession(session.value, $index)" ng-show="!user.e">
+                            <span class="glyphicon glyphicon-trash"></span>
+                        </button>
+                    </td> 
+                    <td></td>
+                </tr>
+
+            </tbody>      
+        </table>               
+    </div>
+    <div class="table-responsive form-inline" align="left" style="margin-top: 0; padding-top: 0;">
+
+        <!--pagination-->
+        <div class="form-group">
+            <ul uib-pagination total-items="totalItems" ng-model="currentPage" max-size="maxSize" items-per-page="itemsPerPage" ng-change="pageChanged()" class="pagination-sm" boundary-link-numbers="true" rotate="false"></ul>
+        </div>
+        <!--filter-->
+        <div class="form-group">
+            <input type="text" class="form-control" name="search" placeholder="Filter" ng-model="filterText" >
+        </div>
+
+    </div>
+</div>

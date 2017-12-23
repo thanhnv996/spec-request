@@ -1,0 +1,71 @@
+<div class="container">
+    <div class="table-responsive" style="margin-bottom: 0; padding-bottom: 0;">
+        <table class="table">
+            <tr>
+                <td> Delete All User </td>
+                <td> <button class="btn btn-danger" data-toggle="modal" data-target="#DeleteModal" ng-click="deleteAllUsers()"><span>Delete</span></button></td>
+            </tr>
+            <tr>
+                <td> Delete All Apps </td>
+                <td> <button class="btn btn-danger" data-toggle="modal" data-target="#DeleteModal" ng-click="deleteAllApps()"><span>Delete</span></button></td>
+            </tr>
+            <tr>
+                <td>  Delete All Roles</td>
+                <td> <button class="btn btn-danger" data-toggle="modal" data-target="#DeleteModal" ng-click="deleteAllRoles()"><span>Delete</span></button></td>
+            </tr>
+            <tr>
+                <td>  Delete All Permissions</td>
+                <td> <button class="btn btn-danger" data-toggle="modal" data-target="#DeleteModal" ng-click="deleteAllPermissions()"><span>Delete</span></button></td>
+            </tr>
+            <tr>
+                <td>  Init Database</td>
+                <td> <button class="btn btn-danger" data-toggle="modal" data-target="#DeleteModal" ng-click="initDatabases()"><span>Init</span></button></td>
+            </tr>
+            <tr>
+                <td>  Create Admins</td>
+                <td> <button class="btn btn-info" ng-click="showCreateAdmin = true"><span>Create</span></button></td>
+            </tr>
+        </table>
+        
+        <table ng-show="showCreateAdmin" class="table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Username</th>
+                    <th>Email</th>
+                    <th>Password</th>
+                    <th>Balance</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><input class="form-control" placeholder="name" ng-model="cuser.name"></td>
+                    <td><input class="form-control" placeholder="userid" ng-model="cuser.userid"></td>
+                    <td><input class="form-control" placeholder="email" ng-model="cuser.email"></td>
+                    <td><input class="form-control" placeholder="password" type="password" ng-model="cuser.password"></td>
+                    <td><input class="form-control" placeholder="balance" ng-model="cuser.balance"></td>
+                    <td><p data-placement="top" data-toggle="tooltip" title="Save"><button class="btn btn-success btn-xs" data-title="Save"  ng-click="createAdmin(cuser)"><span class="glyphicon glyphicon-floppy-saved"></span></button></p></td>
+                    <td><p data-placement="top" data-toggle="tooltip" title="Close"><button class="btn btn-danger btn-xs" data-title="Close" ><span class="glyphicon glyphicon-remove" ng-click="showCreateAdmin = false"></span></button></p></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Modal -->
+    <div id="DeleteModal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-body" style="color: red; text-align: center; font-family:Verdana; font-weight: bold; ">
+                    <p>Are you sure you want to  {{eventClick}}?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success" data-dismiss="modal" ng-click="agree()">Agree</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

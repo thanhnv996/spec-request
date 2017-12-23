@@ -1,0 +1,307 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : Jul 11, 2017, 10:53:27 PM
+    Author     : Luxury
+*/
+
+@import url("//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css");
+.login-block{
+    background: #DE6262;  /* fallback for old browsers */
+    background: -webkit-linear-gradient(to bottom, #FFB88C, #DE6262);  /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(to bottom, #FFB88C, #DE6262); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+    float:left;
+    width:100%;
+    padding : 50px 0;
+}
+.banner-sec{background:url(https://static.pexels.com/photos/33972/pexels-photo.jpg)  no-repeat left bottom; background-size:cover; min-height:500px; border-radius: 0 10px 10px 0;}
+/*.container{background:#fff; border-radius: 10px; box-shadow:15px 20px 0px rgba(0,0,0,0.1);}*/
+.login-sec{padding: 50px 30px; position:relative;}
+.login-sec .copy-text{position:absolute; width:80%; bottom:20px; font-size:13px; text-align:center;}
+.login-sec .copy-text i{color:#FEB58A;}
+.login-sec .copy-text a{color:#E36262;}
+.login-sec h2{margin-bottom:30px; font-weight:800; font-size:30px; color: #DE6262;}
+.login-sec h2:after{content:" "; width:100px; height:5px; background:#FEB58A; display:block; margin-top:20px; border-radius:3px; margin-left:auto;margin-right:auto}
+.btn-login{background: #DE6262; color:#fff; font-weight:600;}
+.banner-text{width:70%; position:absolute; bottom:40px; padding-left:20px;}
+.banner-text h2{color:#fff; font-weight:600;}
+.banner-text h2:after{content:" "; width:100px; height:5px; background:#FFF; display:block; margin-top:20px; border-radius:3px;}
+.banner-text p{color:#fff;}
+.container-login{
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 35px 20px 5px rgba(0,0,0,0.1);
+    width: 90%;
+    margin: auto;
+}
+
+
+
+.btn{
+    font-size: 14px;
+}
+.glyphicon{
+    line-height: 1.4;
+}
+body{
+    background: white;
+}
+.table,.user,.row{
+    background: white;
+    border-color: #d3e0e9;
+}
+.row{
+    text-align: center;
+}
+.table-responsive{
+    background: white; margin-bottom: 2%; padding: 1%;
+}
+
+a{
+    cursor: pointer;
+}
+.row{
+    margin: 1%;
+    border: solid 1px #d3e0e9;
+}
+
+.some_class{
+    width: 240px;
+}
+
+thead>tr>th{
+    cursor: pointer;   
+}
+th,tr{
+    text-align: center;
+}
+
+.pulse[type=text] {
+    margin-top:4%;
+    width: 130px;
+    box-sizing: border-box;
+    border: 2px solid #61affe;
+    border-radius: 4px;
+    font-size: 16px;
+    background-color: white;
+    background-image: url(https://www.w3schools.com/howto/searchicon.png);
+    background-position: 10px 5px;
+    background-repeat: no-repeat;
+    padding: 5px 20px 5px 40px;
+    -webkit-transition: width 0.4s ease-in-out;
+    transition: width 0.4s ease-in-out;
+}
+
+.pulse[type=text]:focus {
+    width: 100%;
+}
+
+.pulse {
+    background: #61affe;
+    animation: pulse 2s infinite;
+}
+
+
+@keyframes pulse {
+    0% {
+
+        box-shadow: 0 0 0 0 rgba(97,175,254,.4);
+    }
+    70% {
+
+        box-shadow: 0 0 0 10px rgba(97,175,254,0);
+    }
+    100% {
+
+        box-shadow: 0 0 0 0 rgba(97,175,254,0);
+    }
+}
+
+.pagination>li>a{
+    font-size: 14px;
+    font-weight: 600;
+    border: solid 1px #61affe;
+}
+
+.filte-text{
+    text-align: start;
+}
+
+/* Styling for the ngProgress itself */
+#ngProgress {
+    margin: 0;
+    padding: 0;
+    z-index: 99998;
+    background-color: green;
+    color: green;
+    box-shadow: 0 0 10px 0; /* Inherits the font color */
+    height: 2px;
+    opacity: 0;
+
+    /* Add CSS3 styles for transition smoothing */
+    -webkit-transition: all 0.5s ease-in-out;
+    -moz-transition: all 0.5s ease-in-out;
+    -o-transition: all 0.5s ease-in-out;
+    transition: all 0.5s ease-in-out;
+}
+
+/* Styling for the ngProgress-container */
+#ngProgress-container {
+    position: fixed;
+    margin: 0;
+    padding: 0;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 99999;
+}
+
+
+.footable-pagination{
+    text-align: -webkit-auto;
+    display: -webkit-box;
+}
+.selecteditemperpage{
+    margin-left: 10px;
+    margin-top: 30px;        
+}
+select{
+    border: solid 1px #61affe;
+}
+
+
+.fa-facebook {
+    color :white;
+}
+.nav-user{
+    background: white;
+    font-family: Roboto,Helvetica,Verdana,Arial,sans-serif;
+    color: #555;
+}
+
+.animate {
+    -webkit-transition: all 0.3s ease-in-out;
+    -moz-transition: all 0.3s ease-in-out;
+    -o-transition: all 0.3s ease-in-out;
+    -ms-transition: all 0.3s ease-in-out;
+    transition: all 0.3s ease-in-out;
+}
+
+.navbar-bootsnipp {
+    background-color: rgb(255, 255, 255);
+    border-bottom-color: rgb(95, 176, 228);
+    border-radius: 0px;
+    margin-bottom: 0px;
+    z-index: 100;
+        box-shadow: 0px 10px 30px rgb(95, 176, 228);
+}
+.navbar-bootsnipp:nth-of-type(2) {
+    border-top-width: 1px;
+    z-index: 50
+}
+
+.navbar-bootsnipp.affix-top {
+    /*position: absolute;*/
+    top: 0px;
+    width: 100%;
+}
+.navbar-bootsnipp.affix {
+    top: 0px;
+    width: 100%;
+}
+.navbar-bootsnipp .navbar-toggle .icon-bar {
+    background-color: rgb(95, 176, 228);
+}
+
+.navbar-bootsnipp .navbar-brand {
+    color: rgb(95, 176, 228);
+    font-weight: 900;}
+.container{
+        width: 100%;
+}
+
+.filter{
+        margin-left: 80%;
+}
+.pagination-user{
+    text-align: center;
+    margin-top: -40px;
+}
+
+
+.title{
+        font-size: 18px;
+    padding-top: 20px;
+    /*text-transform: uppercase;*/
+    color: #303030;
+    font-weight: 600;
+    margin-bottom: 30px;
+    text-align: center;
+    -webkit-margin-before: 0.83em;
+    -webkit-margin-after: 0.83em;
+    -webkit-margin-start: 0px;
+    -webkit-margin-end: 0px;
+    
+    font-family: inherit;
+    line-height: 1.1;
+}
+
+
+.nav-smooth{
+    position: fixed;
+    list-style-type:none;
+}
+.nav-smooth a {
+    color: white;
+}
+.opblock-summary-method {
+    line-height: 2.1;
+    font-size: 14px;
+    font-weight: 700;
+    min-width: 80px;
+    padding: 6px 15px;
+    text-align: center;
+    border-radius: 3px;   
+    text-shadow: 0 1px 0 rgba(0,0,0,.1);
+    font-family: Titillium Web,sans-serif;
+}
+.info{
+    background: #49cc90;
+}
+.apps{
+    background: #fca130;
+}
+.purchases{
+    background: #61affe;
+}
+.payment{
+    background: #f93e3e;
+}
+.top{
+    background: #49cc90;
+}
+
+.partme{
+    min-height: 80%;
+    padding-top: 1px;
+}
+
+.me-table{
+    margin:auto;
+    box-shadow: 10px 10px 15px darkgrey;
+    width :auto;
+    font-size: 14px;
+}
+
+.odd{
+    background: white;
+}
+.even{
+    background: linear-gradient(to bottom left,rgb(95, 176, 228),white);
+}
+.info_me{
+    font-size: 14px;
+}

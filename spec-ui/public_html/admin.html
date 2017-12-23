@@ -1,0 +1,127 @@
+<html>
+    <head>
+        <title>Home</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="stylesheet" href="css/bootstrap.min.css">
+        <link rel="stylesheet" href="css/mystyle.css">
+        <link rel="stylesheet" href="css/bootstrap-theme.min.css">
+        <link rel="stylesheet" href="css/angular-animate-1.6.4.css">   
+        <link rel="stylesheet" href="css/angular-ui-notification.css">  
+        <link rel="stylesheet" href="css/loading-bar.css">      
+        <link rel="stylesheet" href="css/component.css">  
+
+        <script type="text/javascript" src="js/lib/jquery.min.js"></script>
+        <script type="text/javascript" src="js/lib/bootstrap.min.js"></script>
+        <script type="text/javascript" src="js/lib/angular.js"></script>
+        <script type="text/javascript" src="js/lib/angular-ui-router-1.0.3.min2.js"></script>
+        <script type="text/javascript" src="js/lib/angular-animate-1.6.4.js"></script>
+        <script type="text/javascript" src="js/lib/xeditable.js"></script>
+        <script type="text/javascript" src="js/lib/angular-ui-notification.js"></script>
+        <script type="text/javascript" src="js/lib/ui-bootstrap-tpls-2.5.0.min.js"></script>
+        <script type="text/javascript" src="js/lib/loading-bar.js"></script>
+        <script type="text/javascript" src="js/lib/modernizr.custom.js"></script>
+
+        <script type="text/javascript" src="js/util/apiconfig.js"></script>
+        <script type="text/javascript" src="js/util/apiutil.js"></script>
+        <script type="text/javascript" src="js/util/uicommon.js"></script>
+        <script type="text/javascript" src="js/util/common-function.js"></script>
+
+        <script type="text/javascript" src="js/admin/admin-auth-ui-app.js"></script>
+        <script type="text/javascript" src="js/admin/admin-sessions-controller.js"></script>
+        <script type="text/javascript" src="js/admin/admin-users-controller.js"></script>       
+        <script type="text/javascript" src="js/admin/admin-apps-controller.js"></script>
+        <script type="text/javascript" src="js/admin/admin-userapps-controller.js"></script>
+        <script type="text/javascript" src="js/admin/admin-roles-controller.js"></script>
+        <script type="text/javascript" src="js/admin/admin-permissions-controller.js"></script>
+        <script type="text/javascript" src="js/admin/admin-rolepermissions-controller.js"></script>
+        <script type="text/javascript" src="js/admin/admin-products-controller.js"></script>
+        <script type="text/javascript" src="js/admin/admin-payments-controller.js"></script>
+        <script type="text/javascript" src="js/admin/admin-purchases-controller.js"></script>
+        <script type="text/javascript" src="js/admin/admin-tools-controller.js"></script>
+        <script type="text/javascript" src="js/web/login-controller.js"></script>
+
+
+        <script>
+            ngapp.controller('sessionstatusCtrl', function ($scope, $http, $state, authsession) {
+            $scope.$watch(function () {
+            return authsession.getUser();
+            },
+                    function (value) {
+                    $scope.user = value;
+                    }
+            );
+            $scope.showLogin = function () {
+            $state.go('login');
+            };
+            $scope.showRegister = function () {
+            $state.go('register');
+            };
+            $scope.getMe = function () {
+            httpApiGet($http, 'me/info', function ($response) {
+            console.log($response);
+            if ($response.status === HTTP_OK) {
+            authsession.setUser($response.data);
+            } else {
+            authsession.setUser({});
+            }
+            });
+            };
+            $scope.logout = function () {
+            httpApiDelete($http, 'login', function ($response) {
+            if ($response.status === HTTP_GONE) {
+            authsession.setUser({});
+            }
+            });
+            };
+            $scope.getMe();
+            });
+        </script>
+    </head>
+
+    <body ng-app="admin-auth-ui-app">
+        <nav class="navbar navbar-inverse" ng-controller="sessionstatusCtrl">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>                        
+                    </button>
+                    <a class="navbar-brand" href="#">Authentication admin </a>
+                </div>
+                <div class="collapse navbar-collapse" id="myNavbar">
+                    <ul class="nav navbar-nav navbar-right" ng-show="user.id">
+                        <li><a href ng-click="showRegister()"><span class="glyphicon glyphicon-user"></span> {{user.name}} ({{user.userid}}|{{user.id}}) </a></li>
+                        <li><a href ng-click="logout()"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+                    </ul>
+                    <ul class="nav navbar-nav navbar-right" ng-show="!user.id">
+                        <li><a href ng-click="showRegister()"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
+                        <li><a href ng-click="showLogin()"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+                    </ul>
+                    <ul class="nav navbar-nav">
+                        <li> <a ui-sref="users" ng-click="start()">Users</a>  </li>
+                        <li> <a ui-sref="apps">Applications</a>  </li>
+                        <li> <a ui-sref="userapps">User-apps</a>  </li>
+                        <li> <a ui-sref="roles">Roles</a>  </li>
+                        <li> <a ui-sref="permissions">Permissions</a>  </li>
+                        <li> <a ui-sref="rolepermissions">Role-Permissions</a>  </li>
+                        <li> <a ui-sref="products">Products</a>  </li>
+                        <li> <a ui-sref="payments">Payments</a>  </li>
+                        <li> <a ui-sref="purchases">Purchases</a>  </li>
+                        <li> <a ui-sref="sessions">Sessions</a>  </li>
+                        <li> <a ui-sref="tools">Tools</a>  </li>
+                        <li> <a href="index.html">Exit</a>  </li>
+                    </ul>
+
+                </div>
+            </div>
+        </nav>
+
+        <div ui-view></div>   
+        
+
+
+    </body>
+</html>

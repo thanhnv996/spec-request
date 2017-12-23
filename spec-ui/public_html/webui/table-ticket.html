@@ -1,0 +1,495 @@
+<div class="container-fluid" id="style-scroll" style="overflow-y: auto; height: calc(111vh - 75px); margin-right: 0.3%;">
+    <!-- APPLICATIONS -->
+    <div class="row clearfix">
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" >
+            <div class="card"  style="margin-bottom: 0px;">
+                <div class="header bg-purple">
+                    <h2>
+                        {{header}}<small>tickets {{statusSelect}}</small>
+                    </h2>
+                    <ul class="header-dropdown m-r--5">
+                        <li class="dropdown">
+                            <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                                <i class="material-icons">more_vert</i>
+                            </a>
+                            <ul class="dropdown-menu pull-right">
+                                <li><a href="javascript:void(0);">Action</a></li>
+                                <li><a href="javascript:void(0);">Another action</a></li>
+                                <li><a href="javascript:void(0);">Something else here</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+                <div class="body"  id="style-scroll-purple" style="overflow-y: auto; height:calc(75vh); ">                           
+                    <div class="table-responsive">
+                        <table class="table table-hover dashboard-task-infos">
+                            <thead>
+                                <tr>
+                                    <th width="4%">#</th>
+                                    <th width="%">Tên công việc</th>
+                                    <th width="%">Mức độ ưu tiên</th>
+                                    <th width="%">Người yêu cầu</th>
+                                    <th width="%">Người thực hiện</th>
+                                    <th ng-if="owner === 'partit'">Bộ phận IT</th>
+                                    <th width="%">Ngày hết hạn</th>
+                                    <th width="%">Trạng thái</th>
+                                    <th width="%">Đã đọc</th>
+                                    <th width="%"></th>
+                                    <th width="%"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="ticket in tickets" ng-if="ticket.status === statusSelect || statusSelect === 'all'" ng-click="showTicket(ticket.id)" >
+                                    <td data-toggle="modal" data-target="#ticket_view">{{$index + 1}}</td>
+                                    <td data-toggle="modal" data-target="#ticket_view">{{ticket.subject}}</td>
+                                    <td data-toggle="modal" data-target="#ticket_view">{{ticket.priority}}</td>
+                                    <td data-toggle="modal" data-target="#ticket_view">{{ticket.createdBy.name}}</td>
+                                    <td data-toggle="modal" data-target="#ticket_view"> {{ticket.assignedTo.name}} </td>
+                                    <th data-toggle="modal" data-target="#ticket_view" ng-if="owner === 'partit'">{{ticket.partcode.partdesc}}</th>
+                                    <td data-toggle="modal" data-target="#ticket_view"> {{ticket.deadline}} </td>
+                                    <td data-toggle="modal" data-target="#ticket_view">
+                                        <span ng-if="ticket.status === 'new'" class="label bg-green"> {{ticket.status}}</span> 
+                                        <span ng-if="ticket.status === 'inprogress'" class="label bg-yellow"> {{ticket.status}}</span> 
+                                        <span ng-if="ticket.status === 'resolved'" class="label bg-red"> {{ticket.status}}</span> 
+                                        <span ng-if="ticket.status === 'feedback'" class="label bg-olive"> {{ticket.status}}</span> 
+                                        <span ng-if="ticket.status === 'closed'" class="label bg-orange"> {{ticket.status}}</span>
+                                        <span ng-if="ticket.status === 'cancelled'" class="label bg-gray"> {{ticket.status}}</span> 
+                                    </td>
+                                    <td>
+                                        <div ng-if="strReader.includes(ticket.id)">
+                                            <input ng-click="markRead(ticket.id,0)" checklist-model="relaterId" checklist-value="{{user.id}}" type="checkbox" id="md_checkbox_{{$index}}" class="filled-in chk-col-deep-purple" checked />
+                                            <label for="md_checkbox_{{$index}}"></label>
+                                        </div>
+                                        <div ng-if="!strReader.includes(ticket.id)">
+                                            <input ng-click="markRead(ticket.id,1)" checklist-model="relaterId" checklist-value="{{user.id}}" type="checkbox" id="md_checkbox_{{$index}}" class="filled-in chk-col-deep-purple"/>
+                                            <label for="md_checkbox_{{$index}}"></label>
+                                        </div>
+                                    </td>
+                                </tr>       
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--//model ticket view-->
+    <div class="modal fade product_viewzz" id="ticket_view">
+        <div class="modal-dialog" style="width: 98%;     margin-bottom: 2px;margin-top: 3px;">
+            <div class="modal-content">
+                <!--                <div  style="border-bottom: solid 1px red;     padding: 10px;">
+                                    <a data-dismiss="modal" class="class pull-right"><span class="glyphicon glyphicon-remove"></span></a>
+                                    <h2 style="margin: 0; color: purple;">{{ticket.name}}</h2>
+                                </div>-->
+
+                <div class="modal-header">
+                    <!--<button type="button" class="close" data-dismiss="modal">&times;</button>-->
+                    <span class="modal-title">{{ticketShow.subject}}</span>
+                    <button type="button" class="btn bg-deep-purple waves-effect pull-right" data-toggle="modal" data-target="#modal_partit">
+                        <i class="material-icons">business_center</i>
+                        <span>Thay đổi bộ phận IT</span>
+                    </button>
+                    <button type="button" class="btn bg-deep-purple waves-effect pull-right" data-toggle="modal" data-target="#modal_priority">
+                        <i class="material-icons">star_half</i>
+                        <span>Thay đổi mức độ ưu tiên</span>
+                    </button>
+                    <button type="button" class="btn bg-deep-purple waves-effect pull-right" data-toggle="modal" data-target="#modal_deadline">
+                        <i class="material-icons">update</i>
+                        <span>Thay đổi deadline</span>
+                    </button>
+
+                    <button type="button" class="btn bg-deep-purple waves-effect pull-right" data-toggle="modal" data-target="#modal_relater" ng-click="loadUser()">
+                        <i class="material-icons">person</i>
+                        <span>Thay đổi người liên quan</span>
+                    </button>
+                    <button type="button" class="btn bg-deep-purple waves-effect pull-right" data-toggle="modal" data-target="#modal_assign" ng-click="loadUser()">
+                        <i class="material-icons">group</i>
+                        <span>Assign</span>
+                    </button>
+                    <button type="button" class="btn bg-deep-purple waves-effect pull-right" data-toggle="modal" data-target="#modal_state">
+                        <i class="material-icons">swap_horiz</i>
+                        <span>Thay đổi trạng thái</span>
+                    </button>
+                    <button type="button" class="btn bg-deep-purple waves-effect pull-right" data-toggle="modal" data-target="#modal_rating">
+                        <i class="material-icons">star</i>
+                        <span>Đánh giá</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <!--                    <div class="row">
+                                            <h3>{{ticketShow.subject}}</h3>
+                                            <hr style="border-top: 3px double #673ab7;">
+                                        </div>-->
+                    <div class="row myrow">
+                        <div class="col-md-4">
+                            <div class="col-md-4">
+                                <span><b>Ngày tạo :</b></span>
+                            </div>
+                            <div class="col-md-5">
+                                {{ticketShow.createdAt}}
+                            </div>
+                        </div>
+                        <div class="col-md-8">
+                            <div class="col-md-2">
+                                <span><b>Ngày hết hạn :</b></span>
+                            </div>
+                            <div class="col-md-5">
+                                {{ticketShow.deadline}}
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="col-md-4">
+                                <span><b>Người yêu cầu :</b></span>
+                            </div>
+                            <div class="col-md-5">
+                                {{ticketShow.createdBy.name}}
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="col-md-4">
+                                <span><b>Người thực hiện :</b></span>
+                            </div>
+                            <div class="col-md-5">
+                                {{ticketShow.assignedTo.name}}
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="col-md-4">
+                                <span><b>Bộ phận IT :</b></span>
+                            </div>
+                            <div class="col-md-5">
+                                {{ticketShow.partcode.partdesc}}
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="col-md-4">
+                                <span><b>Mức độ ưu tiên :</b></span>
+                            </div>
+                            <div class="col-md-5">
+                                <span ng-if="ticketShow.priority === '1'">thấp</span>
+                                <span ng-if="ticketShow.priority === '2'">bình thường</span>
+                                <span ng-if="ticketShow.priority === '3'">cao</span>
+                                <span ng-if="ticketShow.priority === '4'">khẩn cấp</span>
+                                <!--{{ticketShow.priority}}-->
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="col-md-4">
+                                <span><b>Trạng thái :</b></span>
+                            </div>
+                            <div class="col-md-5">
+                                {{ticketShow.status}}
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="col-md-4">
+                                <span><b>Người liên quan :</b></span>
+                            </div>
+                            <div class="col-md-5">
+                                <span ng-repeat="relater in relaters" class="label bg-red" style="margin-right: 10px;font-size: 16px;">{{relater.employeeId.name}}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <hr style="border-top: 3px double #673ab7;">
+                    <div class="style-scroll-black card" style="overflow-y: auto; height:calc(38vh); padding-top: 10px;">
+                        <!--                        <div ng-repeat="comment in comments">
+                                                    {{comment.content}}<br>
+                                                    {{comment.content}}<br>
+                                                    {{comment.content}}<br>
+                                                    {{comment.content}}<br>
+                                                    {{comment.content}}<br>
+                                                    {{comment.content}}<br>
+                                                </div>-->
+                        <div class="row "  >
+                            <div ng-repeat="comment in comments" style="    margin-left: 1em;     display: grid;">
+                                <div>
+                                    <i class="material-icons" style="float: left;font-size: 35px;color: #9c27b0;">account_circle</i>
+                                    <div style="float: left; padding-left: 5px;">
+                                        <span style="color: cornflowerblue;"><b>{{comment.employeeId.name}}</b></span><br>
+                                        <small>{{comment.createdAt}}</small>
+                                    </div>
+                                </div>
+                                <div>
+                                    <pre style="overflow-x: hidden;">{{comment.content}}</pre>
+                                    <hr>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <label>Bình luận <span style="color:red;"></span></label>
+                    <textarea ng-model="content_comment" id="contentComment" class="textarea" id="myarea" placeholder="Nội dung bình luận" style="width: 100%; height: 125px; font-size: 14px; line-height: 18px; border: 1px solid #dddddd; padding: 10px;"></textarea>
+                    <button ng-click="addComment()" class="btn bg-green waves-effect pull-right" data-title="Comment"  style="margin-top: -35px;" >Gửi</button>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--modal change partit-->
+    <div class="modal fade product_view" id="modal_partit">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header" style="text-align: center;">
+                    <h4>thay đổi bộ phận IT</h4>
+                </div>
+                <div class="modal-body">
+                    <select id="partcode" class="form-control show-tick" style="margin-top: 5px;" ng-model ="partit">
+                        <option value="HANOI">Hà nội - IT</option>
+                        <option value="DANANG">Đà nẵng - IT</option>
+                    </select>
+                </div>
+                <div class="modal-footer">
+                    <button ng-click="putPartIt()" class="btn bg-green waves-effect" data-type="success">
+                        <i class="material-icons">check</i>
+                        <span>Thay đổi</span>
+                    </button>
+                    <button class="btn bg-orange waves-effect" data-type="success" data-dismiss="modal">
+                        <i class="material-icons">close</i>
+                        <span>Trở lại</span>
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!--modal change priority-->
+    <div class="modal fade product_view" id="modal_priority">
+        <div class="modal-dialog" >
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4>thay đổi mức độ ưu tiên</h4>
+                </div>
+                <div class="modal-body">
+                    <select id="priority" class="form-control show-tick" ng-model="priority">
+                        <option value="1">thấp</option>
+                        <option value="2">bình thường</option>
+                        <option value="3">cao</option>
+                        <option value="4">khẩn cấp</option>
+                    </select>
+                    <span><b>lý do</b><span style="color:red;">*</span></span>
+                    <textarea id="reason_change_priority" class="textarea" style="width: 100%;" ng-model="reason_change_priority"></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button ng-click="putPriority()" class="btn bg-green waves-effect" data-type="success">
+                        <i class="material-icons">check</i>
+                        <span>Thay đổi</span>
+                    </button>
+                    <button class="btn bg-orange waves-effect" data-type="success" data-dismiss="modal">
+                        <i class="material-icons">close</i>
+                        <span>Trở lại</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--modal change deadline-->
+    <div class="modal fade product_view" id="modal_deadline">
+        <div class="modal-dialog" style="width:50%;" >
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4>thay đổi deadline</h4>
+                </div>
+                <div class="modal-body">
+                    <span> <b>Ngày hết hạn<span style="color:red;">*</span></b> </span>
+                    <div class="input-group">
+                        <span class="input-group-addon">
+                            <i class="material-icons">date_range</i>
+                        </span>
+                        <div class="form-line">
+                            <input id="deadline" ng-model="deadline" type="text" class="form-control datetime" placeholder="Ex: 30/07/2016 23:59">
+                        </div>
+                    </div>
+                    <span><b>lý do</b><span style="color:red;">*</span></span>
+                    <textarea id="reason_change_deadline" class="textarea" style="width: 100%;" ng-model="reason_change_deadline"></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button ng-click="putDeadline()" class="btn bg-green waves-effect" data-type="success">
+                        <i class="material-icons">check</i>
+                        <span>Thay đổi</span>
+                    </button>
+                    <button class="btn bg-orange waves-effect" data-type="success" data-dismiss="modal">
+                        <i class="material-icons">close</i>
+                        <span>Trở lại</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--modal change relater-->
+    <div class="modal fade product_view" id="modal_relater">
+        <div class="modal-dialog" >
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4>thay đổi người liên quan</h4>
+                </div>
+                <div class="modal-body">
+                    <!--                    <select ng-model="myselect"  class="form-control show-tick"  data-live-search="true" multiple >
+                                            <option ng-repeat="o in users" ng-selected="{{o == myselect}}" value="{{o.id}}">
+                                                {{o.name}}
+                                            </option>
+                                        </select>-->
+
+                    <div ng-repeat="user in users">
+                        <div ng-if="strRelater.includes(user.id)">
+                            <input checklist-model="relaterId" checklist-value="{{user.id}}" type="checkbox" id="md_checkbox_{{$index}}" class="filled-in chk-col-deep-purple" checked />
+                            <label for="md_checkbox_{{$index}}">{{user.name}}</label>
+                        </div>
+                        <div ng-if="!strRelater.includes(user.id)">
+                            <input checklist-model="relaterId" checklist-value="{{user.id}}" type="checkbox" id="md_checkbox_{{$index}}" class="filled-in chk-col-deep-purple"/>
+                            <label for="md_checkbox_{{$index}}">{{user.name}}</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button ng-click="putRelater()" class="btn bg-green waves-effect" data-type="success">
+                        <i class="material-icons">check</i>
+                        <span>Thay đổi</span>
+                    </button>
+                    <button class="btn bg-orange waves-effect" data-type="success" data-dismiss="modal">
+                        <i class="material-icons">close</i>
+                        <span>Trở lại</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--modal rating-->
+    <div class="modal fade product_view" id="modal_rating">
+        <div class="modal-dialog" style="width:50%;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4>Đánh giá</h4>
+                </div>
+                <div class="modal-body">
+                    <div style="margin-bottom: 10px;">
+                        <select id="rating" class="form-control show-tick" ng-model="rating">
+                            <option value="0">không hài lòng</option>
+                            <option value="1">hài lòng</option>
+                        </select>
+                    </div>
+                    <span><b>nhận xét</b><span style="color:red;">*</span></span>
+                    <textarea id="comment_rating" class="textarea" style="width: 100%;" ng-model="comment_rating"></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button ng-click="putRating(rating, comment_rating)" class="btn bg-green waves-effect" data-type="success">
+                        <i class="material-icons">check</i>
+                        <span>Xác nhận</span>
+                    </button>
+                    <button class="btn bg-orange waves-effect" data-type="success" data-dismiss="modal">
+                        <i class="material-icons">close</i>
+                        <span>Trở lại</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--modal change assign-->
+    <div class="modal fade product_view" id="modal_assign">
+        <div class="modal-dialog" >
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4>thay đổi assign</h4>
+                </div>
+                <div class="modal-body">
+                    <!--                    <input checklist-model="relaterId" checklist-value="{{user.id}}" type="checkbox" id="md_checkbox_{{$index}}" class="filled-in chk-col-deep-purple" checked />
+                                            <label for="md_checkbox_{{$index}}">{{user.name}}</label>-->
+                    <div ng-repeat="user in users">
+                        <div ng-if="user.id === ticketShow.assignedTo.id">
+                            <input value ="{{user.id}}" name="group5" type="radio" id="radio_{{$index}}" class="with-gap radio-col-red" checked />
+                            <label for="radio_{{$index}}">{{user.name}}</label>
+                        </div>
+                        <div ng-if="user.id !== ticketShow.assignedTo.id">
+                            <input value ="{{user.id}}" name="group5" type="radio" id="radio_{{$index}}" class="with-gap radio-col-red"/>
+                            <label for="radio_{{$index}}">{{user.name}}</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button ng-click="putAssignto()" class="btn bg-green waves-effect" data-type="success">
+                        <i class="material-icons">check</i>
+                        <span>Thay đổi</span>
+                    </button>
+                    <button class="btn bg-orange waves-effect" data-type="success" data-dismiss="modal">
+                        <i class="material-icons">close</i>
+                        <span>Trở lại</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!--thay đổi trạng thái-->
+    <div class="modal fade product_view" id="modal_state">
+        <div class="modal-dialog" style="width:50%;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4>Thay đổi trạng thái</h4>
+                </div>
+                <div class="modal-body">
+                    <div style="margin-bottom: 10px;">
+                        <select id="status" class="form-control show-tick" ng-model="status">
+                            <option value="inprogress">Inprogress</option>
+                            <option value="resolved">Resolved</option>
+                            <option value="feedback">Feedback</option>
+                            <option value="closed">Closed</option>
+                            <option value="cancelled">Cancelled</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button ng-click="putStatus()" class="btn bg-green waves-effect" data-type="success">
+                        <i class="material-icons">check</i>
+                        <span>Xác nhận</span>
+                    </button>
+                    <button class="btn bg-orange waves-effect" data-type="success" data-dismiss="modal">
+                        <i class="material-icons">close</i>
+                        <span>Trở lại</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div style="margin-left: 50%;">
+        <!--        <input type="checkbox" id="md_checkbox_21" class="filled-in chk-col-red" checked />
+                <label for="md_checkbox_21">RED</label>
+                <input type="checkbox" id="md_checkbox_22" class="filled-in chk-col-pink" checked />
+                <label for="md_checkbox_22">PINK</label>
+                <input type="checkbox" id="md_checkbox_23" class="filled-in chk-col-purple" checked />
+                <label for="md_checkbox_23">PURPLE</label>
+                <input type="checkbox" id="md_checkbox_24" class="filled-in chk-col-deep-purple" checked />
+                <label for="md_checkbox_24">DEEP PURPLE</label>-->
+    </div>
+
+    <!-- Jquery Core Js -->
+    <script src="plugins/jquery/jquery.min.js"></script>
+
+    <!-- Bootstrap Core Js -->
+    <script src="plugins/bootstrap/js/bootstrap.js"></script>
+
+    <!-- Waves Effect Plugin Js -->
+    <script src="plugins/node-waves/waves.js"></script>
+
+    <!-- Custom Js -->
+    <script src="js/util/admin-uiview.js"></script>
+    <script src="js/pages/ui/tooltips-popovers.js"></script>
+    <!-- APPLICATIONS -->
+    <script src="plugins/bootstrap-tagsinput/bootstrap-tagsinput.js"></script>
+    <script src="plugins/multi-select/js/jquery.multi-select.js"></script>
+    <script src="plugins/bootstrap-select/js/bootstrap-select.js"></script>
+    <!-- Input Mask Plugin Js -->
+    <script src="plugins/jquery-inputmask/jquery.inputmask.bundle.js"></script>
+    <!-- Bootstrap WYSIHTML5 -->
+    <script src="plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.all.js"></script>
+    <script src="dist/js/pages/dashboard.js"></script>
+    <script>
+                        //bootstrap WYSIHTML5 - text editor
+                        $(".textarea").wysihtml5();
+    </script>
+</div>
+
+

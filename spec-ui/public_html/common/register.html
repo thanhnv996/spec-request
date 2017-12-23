@@ -1,0 +1,81 @@
+<div class="signup-page" style="margin-left: 20%; zoom:1.1; margin-top: -40px;">
+    <div class="signup-box">
+        <div class="logo">
+            <a href="javascript:void(0);">Register<b>Z11</b></a>
+            <small>System Authentication server</small>
+        </div>
+        <div class="card">
+            <div class="body">
+                <form id="sign_up" method="POST">
+                    <div class="msg">Register a new membership</div>
+                    <div class="input-group">
+                        <span class="input-group-addon">
+                            <i class="material-icons">perm_identity</i>
+                        </span>
+                        <div class="form-line">
+                            <input type="text" class="form-control" name="namesurname" placeholder="Full name" required autofocus ng-model="name">
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-addon">
+                            <i class="material-icons">person</i>
+                        </span>
+                        <div class="form-line">
+                            <input type="text" class="form-control" name="namesurname" placeholder="Username" required autofocus ng-model="userid">
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-addon">
+                            <i class="material-icons">email</i>
+                        </span>
+                        <div class="form-line">
+                            <input type="email" class="form-control" name="email" placeholder="Email Address" required ng-model="email">
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-addon">
+                            <i class="material-icons">lock</i>
+                        </span>
+                        <div class="form-line">
+                            <input type="password" class="form-control" name="password" minlength="6" placeholder="Password" required ng-model="password">
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-addon">
+                            <i class="material-icons">lock</i>
+                        </span>
+                        <div class="form-line">
+                            <input type="password" class="form-control" name="confirm" minlength="6" placeholder="Confirm Password" required ng-model="password2">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <input type="checkbox" name="terms" id="terms" class="filled-in chk-col-pink">
+                        <label for="terms">I read and agree to the <a href="javascript:void(0);">terms of usage</a>.</label>
+                    </div>
+
+                    <button class="btn btn-block btn-lg bg-pink waves-effect" type="submit" ng-click="registerUser(userid, email, name, password, password2)">SIGN UP</button>
+                    
+                    <div class="m-t-25 m-b--5 align-center">
+                        <a href>You already have a membership?</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Jquery Core Js -->
+    <script src="plugins/jquery/jquery.min.js"></script>
+
+    <!-- Bootstrap Core Js -->
+    <script src="plugins/bootstrap/js/bootstrap.js"></script>
+
+    <!-- Waves Effect Plugin Js -->
+    <script src="plugins/node-waves/waves.js"></script>
+
+    <!-- Validation Plugin Js -->
+    <script src="plugins/jquery-validation/jquery.validate.js"></script>
+
+    <!-- Custom Js -->
+    <script src="js/util/admin-uiview.js"></script>
+    <script src="js/pages/examples/sign-up.js"></script>
+</div>
