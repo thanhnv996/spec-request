@@ -1,5 +1,5 @@
 
-<div class="container-fluid" id="style-scroll" style=" height: calc(111vh - 75px); margin-right: 0.3%; margin-top: -7px;">
+<div  class="container-fluid style-scroll-black" style="overflow-y: hidden; height: calc(111vh - 75px); margin-right: 0.3%;">
 
     <div class="row clearfix">
         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" >
@@ -21,7 +21,7 @@
                         </li>
                     </ul>
                 </div>
-                <div class="body"  id="style-scroll-purple" style=" height:calc(90vh); ">                           
+                <div class="body"  id="style-scroll-purple" style="overflow-y: auto; height:calc(86vh); ">                           
                     <!-- /.box-header -->
                     <div class="box-body">
                         <div class="row">
@@ -72,11 +72,17 @@
 
                             <div class=" col-md-6">
                                 <span> <b>Người liên quan</b> </span>
-                                <select ng-model="myselect"  class="form-control show-tick"  data-live-search="true" multiple >
+                                <!-- <select ng-model="myselect"  class="form-control show-tick"  data-live-search="true" multiple >
                                     <option ng-repeat="o in users" ng-selected="{{o == myselect}}" value="{{o.id}}">
                                         {{o.name}}
                                     </option>
-                                </select>
+                                </select> -->
+                                <div class="style-scroll-purple" style="overflow-y: auto; height:calc(20vh); ">
+                                    <div ng-repeat="user in users" >
+                                        <input checklist-model="relaterId" checklist-value="{{user.id}}" type="checkbox" id="md_checkbox_{{$index}}" class="filled-in chk-col-deep-purple" />
+                                        <label for="md_checkbox_{{$index}}">{{user.name}}</label>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
@@ -124,9 +130,9 @@
     <script src="plugins/ckeditor/ckeditor.js"></script>
     <script src="js/pages/forms/editors.js"></script>
     <!-- APPLICATIONS -->
-    <script src="plugins/bootstrap-tagsinput/bootstrap-tagsinput.js"></script>
-    <script src="plugins/multi-select/js/jquery.multi-select.js"></script>
-    <script src="plugins/bootstrap-select/js/bootstrap-select.js"></script>
+    <!-- <script src="plugins/bootstrap-tagsinput/bootstrap-tagsinput.js"></script> -->
+    <!-- <script src="plugins/multi-select/js/jquery.multi-select.js"></script> -->
+    <!-- <script src="plugins/bootstrap-select/js/bootstrap-select.js"></script> -->
     <!-- Input Mask Plugin Js -->
     <script src="plugins/jquery-inputmask/jquery.inputmask.bundle.js"></script>
     <!-- Bootstrap WYSIHTML5 -->

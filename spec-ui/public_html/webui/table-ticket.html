@@ -1,4 +1,4 @@
-<div class="container-fluid" id="style-scroll" style="overflow-y: auto; height: calc(111vh - 75px); margin-right: 0.3%;">
+<div class="container-fluid style-scroll-black" style="overflow-y: hidden; height: calc(111vh - 75px); margin-right: 0.3%;">
     <!-- APPLICATIONS -->
     <div class="row clearfix">
         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" >
@@ -20,7 +20,7 @@
                         </li>
                     </ul>
                 </div>
-                <div class="body"  id="style-scroll-purple" style="overflow-y: auto; height:calc(75vh); ">                           
+                <div class="body"  id="style-scroll-black" style="overflow-y: auto; height:calc(86vh); ">                           
                     <div class="table-responsive">
                         <table class="table table-hover dashboard-task-infos">
                             <thead>
@@ -395,8 +395,6 @@
                     <h4>thay đổi assign</h4>
                 </div>
                 <div class="modal-body">
-                    <!--                    <input checklist-model="relaterId" checklist-value="{{user.id}}" type="checkbox" id="md_checkbox_{{$index}}" class="filled-in chk-col-deep-purple" checked />
-                                            <label for="md_checkbox_{{$index}}">{{user.name}}</label>-->
                     <div ng-repeat="user in users">
                         <div ng-if="user.id === ticketShow.assignedTo.id">
                             <input value ="{{user.id}}" name="group5" type="radio" id="radio_{{$index}}" class="with-gap radio-col-red" checked />
@@ -466,25 +464,7 @@
                 <label for="md_checkbox_24">DEEP PURPLE</label>-->
     </div>
 
-    <!-- Jquery Core Js -->
-    <script src="plugins/jquery/jquery.min.js"></script>
-
-    <!-- Bootstrap Core Js -->
-    <script src="plugins/bootstrap/js/bootstrap.js"></script>
-
-    <!-- Waves Effect Plugin Js -->
-    <script src="plugins/node-waves/waves.js"></script>
-
-    <!-- Custom Js -->
-    <script src="js/util/admin-uiview.js"></script>
-    <script src="js/pages/ui/tooltips-popovers.js"></script>
-    <!-- APPLICATIONS -->
-    <script src="plugins/bootstrap-tagsinput/bootstrap-tagsinput.js"></script>
-    <script src="plugins/multi-select/js/jquery.multi-select.js"></script>
-    <script src="plugins/bootstrap-select/js/bootstrap-select.js"></script>
-    <!-- Input Mask Plugin Js -->
-    <script src="plugins/jquery-inputmask/jquery.inputmask.bundle.js"></script>
-    <!-- Bootstrap WYSIHTML5 -->
+     <!-- Bootstrap WYSIHTML5 -->
     <script src="plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.all.js"></script>
     <script src="dist/js/pages/dashboard.js"></script>
     <script>
