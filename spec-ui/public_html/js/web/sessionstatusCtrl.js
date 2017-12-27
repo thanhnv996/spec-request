@@ -91,7 +91,7 @@ ngapp.controller('sessionstatusCtrl', function ($scope, $http, $state, authsessi
         httpApiGet($http, 'ticket/' + id + '/comment', function ($response) {
             console.log($response);
             if ($response.status === HTTP_OK) {
-                if ($response.data.ticketThread.length === 1) {
+                if ($response.data.ticketThread.length == undefined) {
                     $scope.comments = [];
                     $scope.comments.push($response.data.ticketThread);
                 } else {
@@ -179,17 +179,7 @@ ngapp.controller('sessionstatusCtrl', function ($scope, $http, $state, authsessi
             if ($response.status === HTTP_OK) {
                 $scope.getTicket1($scope.ticketShow.id);
                 $scope.getComment($scope.ticketShow.id);
-//                $('#modal_rating').modal('hide');
-//                $('#modal_priority').modal('hide');
-//                $('#modal_parit').modal('hide');
-//                $('#modal_deadline').modal('hide');
-//                $('#modal_relater').modal('hide');
-//                $('#modal_assign').modal('hide');
-//                $("select#priority").val("").change();
-//                $("textarea#reason_change_priority").val("").change();
-//                $("select#partcode").val("");
-//                $("input#deadline").val("");
-//                $("textarea#reason_change_deadline").val("");
+
                 $("select#rating").val("");
                 $("textarea#comment_rating").val("");
 
@@ -351,15 +341,15 @@ ngapp.controller('sessionstatusCtrl', function ($scope, $http, $state, authsessi
 
         var data = {};
         data.ticket_id = $scope.ticketShow.id;
-        data.subject = null;
+//        data.subject = null;
         if ("? undefined:undefined ?" !== $("select#partcode").val())
             data.partcode = $("select#partcode").val();
-        data.content = null;
+//        data.content = null;
         console.log(data);
         console.log();
         httpApiPut($http, 'ticket/update/sub-attribute', data, function ($response) {
             console.log($response);
-            if ($response.status === HTTP_OK) {
+            if ($response.status === HTTP_ACCEPTED) {
                 $scope.getTicket1($scope.ticketShow.id);
                 $scope.getComment($scope.ticketShow.id);
                 Notification.success({message: 'Sửa công việc thành công', positionY: 'bottom', positionX: 'right'});

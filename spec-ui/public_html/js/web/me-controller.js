@@ -35,15 +35,21 @@ ngapp.controller('meCreateCtrl', function ($rootScope, $state, $scope, $http, $w
             console.log($response);
             if ($response.status === HTTP_OK) {
 
-                console.log($response.data.tickets);
+                
+                if ($response.data.tickets.length == undefined) {
+                    $scope.tickets = [];
+                    $scope.tickets.push($response.data.tickets);
+                } else {
+                    $scope.tickets = $response.data.tickets;
+                }
 
-                $scope.tickets = $response.data.tickets;
+//                $scope.tickets = $response.data.tickets;
 //                formatTime($scope.tickets);
                 for (var i = 0; i < $scope.tickets.length; i++) {
                     $scope.tickets[i].createdAt = formatDate($scope.tickets[i].createdAt);
                     $scope.tickets[i].deadline = formatDate($scope.tickets[i].deadline);
                 }
-
+                console.log($scope.tickets);
             } else if ($response.status === HTTP_UNAUTHORIZED) {
                 $state.go("login");
             }

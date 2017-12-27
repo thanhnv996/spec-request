@@ -160,7 +160,7 @@ public class TicketRest {
             
 
             if (partcode != null) {
-                if (partcode.contains("hanoi") || partcode.contains("danang")) {
+                if (partcode.toLowerCase().contains("hanoi") || partcode.toLowerCase().contains("danang")) {
                     ticket.setPartcode(commonBusiness.getPartByCode(partcode));
                 } else {
                     return z11.rs.auth.AuthUtil.makeTextResponse(Response.Status.BAD_REQUEST, "code bộ phận IT không hợp lệ");
