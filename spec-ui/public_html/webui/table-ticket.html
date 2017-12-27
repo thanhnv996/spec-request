@@ -57,12 +57,12 @@
                                     </td>
                                     <td>
                                         <div ng-if="strReader.includes(ticket.id)">
-                                            <input ng-click="markRead(ticket.id,0)" checklist-model="relaterId" checklist-value="{{user.id}}" type="checkbox" id="md_checkbox_{{$index}}" class="filled-in chk-col-deep-purple" checked />
-                                            <label for="md_checkbox_{{$index}}"></label>
+                                            <input ng-click="markRead(ticket.id,0)" checklist-model="relaterId" checklist-value="{{user.id}}" type="checkbox" id="md_checkbox_{{$index}}_read" class="filled-in chk-col-deep-purple" checked />
+                                            <label for="md_checkbox_{{$index}}_read"></label>
                                         </div>
                                         <div ng-if="!strReader.includes(ticket.id)">
-                                            <input ng-click="markRead(ticket.id,1)" checklist-model="relaterId" checklist-value="{{user.id}}" type="checkbox" id="md_checkbox_{{$index}}" class="filled-in chk-col-deep-purple"/>
-                                            <label for="md_checkbox_{{$index}}"></label>
+                                            <input ng-click="markRead(ticket.id,1)" checklist-model="relaterId" checklist-value="{{user.id}}" type="checkbox" id="md_checkbox_{{$index}}_read" class="filled-in chk-col-deep-purple"/>
+                                            <label for="md_checkbox_{{$index}}_read"></label>
                                         </div>
                                     </td>
                                 </tr>       
@@ -187,7 +187,8 @@
                                 <span><b>Người liên quan :</b></span>
                             </div>
                             <div class="col-md-5">
-                                <span ng-repeat="relater in relaters" class="label bg-red" style="margin-right: 10px;font-size: 16px;">{{relater.employeeId.name}}</span>
+                                <!-- <span ng-repeat="relater in relaters" class="tag" style="margin-right: 10px;font-size: 16px;">{{relater.employeeId.name}}</span> -->
+                                <a ng-repeat="relater in relaters" class="tag">{{relater.employeeId.name}}</a>
                             </div>
                         </div>
                     </div>

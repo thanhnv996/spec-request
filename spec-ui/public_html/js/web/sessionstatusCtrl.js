@@ -57,7 +57,7 @@ ngapp.controller('sessionstatusCtrl', function ($scope, $http, $state, authsessi
             if ($response.status === HTTP_OK) {
                 Notification.success({message: "success", positionY: 'bottom', positionX: 'right'});
             } else {
-                Notification.error({message: $response.statusText, positionY: 'bottom', positionX: 'right'});
+                // Notification.error({message: $response.statusText, positionY: 'bottom', positionX: 'right'});
             }
         });
     };
@@ -67,7 +67,8 @@ ngapp.controller('sessionstatusCtrl', function ($scope, $http, $state, authsessi
         httpApiGet($http, 'ticket/id/' + id + '/relaters', function ($response) {
             console.log($response);
             if ($response.status === HTTP_OK) {
-                if ($response.data.ticketRelaters.length === 1) {
+                console.log($response.data.ticketRelaters.length);
+                if ($response.data.ticketRelaters.length ==undefined) {
                     $scope.relaters = [];
                     $scope.relaters.push($response.data.ticketRelaters);
                 } else {
@@ -79,7 +80,7 @@ ngapp.controller('sessionstatusCtrl', function ($scope, $http, $state, authsessi
                     $scope.relaters[i].createdAt = formatDate($scope.relaters[i].createdAt);
                     $scope.strRelater += "," + $scope.relaters[i].employeeId.id;
                 }
-                console.log("relaters:" + $scope.relaters);
+                console.log($scope.relaters);
             } else {
                 Notification.error({message: $response.statusText, positionY: 'bottom', positionX: 'right'});
             }
