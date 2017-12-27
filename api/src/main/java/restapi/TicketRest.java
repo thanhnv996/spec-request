@@ -99,6 +99,7 @@ public class TicketRest {
             ticket.setCreatedBy(createdBy);
             ticket.setPartcode(partIt);
             ticket.setTeamId(team);
+            ticket.setCreatedAt(new Date());
 
             ticket.setStatus(Config.STATUS_NEW);
             try {
