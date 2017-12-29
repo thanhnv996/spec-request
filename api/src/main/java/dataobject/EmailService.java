@@ -40,8 +40,8 @@ public class EmailService {
                 message.addRecipient(Message.RecipientType.TO, toAddress[i]);
             }
 
-            message.setSubject(subject);
-            message.setText(body);
+            message.setSubject(subject, "utf-8");
+            message.setText(body, "utf-8");
             Transport transport = session.getTransport("smtp");
             transport.connect(host, from, pass);
             transport.sendMessage(message, message.getAllRecipients());

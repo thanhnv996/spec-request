@@ -158,12 +158,12 @@
                         <!--NAME-->
                         <li>
                             <div class="box-info">
-                                <h4>{{me.name}}</h4>
+                                <h4>{{me.name}} - {{me.teamId.description}} - {{me.partcode.partdesc}}</h4>
                                 <!--<img src="{{me.urlProfilePic}}" alt="Avarta">-->
                             </div>
                         </li>
                         <!--BALANCE-->
-                        <li class="balance"><h4><b style='line-height: 2.8;'> <span style="color: indianred;">{{me.balance}}</span></b></h4></li>
+                        <!--<li class="balance"><h4><b style='line-height: 2.8;'> <span style="color: indianred;">{{me.name}}</span></b></h4></li>-->
                         <!--<li class="pull-right"><a href="javascript:void(0);" class="js-right-sidebar" data-close="true"><i class="material-icons">more_vert</i></a></li>-->
                         <!--LOGIN-->
                         <li ng-show="user.id" ng-click="logout()" class="pull-right"  style="cursor:pointer; "><a><i class="glyphicon glyphicon-log-out" style="font-size: 24px; color: indianred;"></i></a></li>     

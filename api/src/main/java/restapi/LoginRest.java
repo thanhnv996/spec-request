@@ -41,11 +41,7 @@ import javax.ws.rs.core.MultivaluedHashMap;
 import javax.ws.rs.core.MultivaluedMap;
 import manager.CommonBusiness;
 
-/**
- * REST Web Service
- *
- * @author vietduc
- */
+
 @Path("login")
 @Stateless
 public class LoginRest {

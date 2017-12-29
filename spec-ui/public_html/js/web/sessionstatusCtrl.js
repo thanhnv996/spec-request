@@ -25,6 +25,19 @@ ngapp.controller('sessionstatusCtrl', function ($scope, $http, $state, authsessi
     $scope.showAdd = function () {
         $state.go('add-ticket');
     };
+    
+    $scope.getMe = function (id) {
+        httpApiGet($http, 'me' , function ($response) {
+            console.log($response);
+            if ($response.status === HTTP_OK) {
+                $scope.me = $response.data;
+                console.log($scope.me);
+            } else {
+                Notification.error({message: $response.statusText, positionY: 'bottom', positionX: 'right'});
+            }
+        });
+    };
+    $scope.getMe();
 
     $scope.showTicket = function (id) {
 
